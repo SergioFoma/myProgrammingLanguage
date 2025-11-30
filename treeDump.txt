@@ -1,0 +1,87 @@
+digraph G{
+	rankdir = TB;
+	node[shape = "hexagon", color = "black", fontsize = 14, shape = record ];
+	edge[color = "red", fontsize = 12];
+	node5040000002d0 [shape="plain"; style ="filled"; fillcolor ="orange"; label = <<table><tr><td colspan = "2" > 0x5040000002d0 </td></tr> <tr><td colspan = "2" > parent = (nil) </td></tr> <tr><td width = "100" colspan = "2" > type = OPERATOR </td></tr> <tr><td width = "100" colspan = "2" > val = SUB </td></tr> <tr><td> 0x504000000150 </td><td> 0x504000000290 </td></tr></table>>;];
+	{
+		rank = 1;
+		node5040000002d0;
+	}
+		node504000000150;
+	node5040000002d0->node504000000150[color = "orange"];
+	node504000000150 [shape="plain"; style ="filled"; fillcolor ="orange"; label = <<table><tr><td colspan = "2" > 0x504000000150 </td></tr> <tr><td colspan = "2" > parent = 0x5040000002d0 </td></tr> <tr><td width = "100" colspan = "2" > type = OPERATOR </td></tr> <tr><td width = "100" colspan = "2" > val = ADD </td></tr> <tr><td> 0x504000000050 </td><td> 0x504000000110 </td></tr></table>>;];
+	{
+		rank = 2;
+		node504000000150;
+	}
+		node504000000050;
+	node504000000150->node504000000050[color = "orange"];
+	node504000000050 [shape="plain"; style ="filled"; fillcolor ="orange"; label = <<table><tr><td colspan = "2" > 0x504000000050 </td></tr> <tr><td colspan = "2" > parent = 0x504000000150 </td></tr> <tr><td width = "100" colspan = "2" > type = OPERATOR </td></tr> <tr><td width = "100" colspan = "2" > val = SIN </td></tr> <tr><td> NULL </td><td> 0x504000000010 </td></tr></table>>;];
+	{
+		rank = 3;
+		node504000000050;
+	}
+		node504000000010;
+	node504000000050->node504000000010[color = "orange"];
+	node504000000010 [shape="plain"; style ="filled"; fillcolor ="lightskyblue2"; label = <<table><tr><td colspan = "2" > 0x504000000010 </td></tr> <tr><td colspan = "2" > parent = 0x504000000050 </td></tr> <tr><td width = "100" colspan = "2" > type = VARIABLE </td></tr> <tr><td width = "100" colspan = "2" > val = 0 (a) </td></tr> <tr><td> NULL </td><td> NULL </td></tr></table>>;];
+	{
+		rank = 4;
+		node504000000010;
+	}
+		node504000000110;
+	node504000000150->node504000000110[color = "orange"];
+	node504000000110 [shape="plain"; style ="filled"; fillcolor ="orange"; label = <<table><tr><td colspan = "2" > 0x504000000110 </td></tr> <tr><td colspan = "2" > parent = 0x504000000150 </td></tr> <tr><td width = "100" colspan = "2" > type = OPERATOR </td></tr> <tr><td width = "100" colspan = "2" > val = MUL </td></tr> <tr><td> 0x504000000090 </td><td> 0x5040000000d0 </td></tr></table>>;];
+	{
+		rank = 3;
+		node504000000110;
+	}
+		node504000000090;
+	node504000000110->node504000000090[color = "orange"];
+	node504000000090 [shape="plain"; style ="filled"; fillcolor ="hotpink2"; label = <<table><tr><td colspan = "2" > 0x504000000090 </td></tr> <tr><td colspan = "2" > parent = 0x504000000110 </td></tr> <tr><td width = "100" colspan = "2" > type = NUMBER </td></tr> <tr><td width = "100" colspan = "2" > val = 5 </td></tr> <tr><td> NULL </td><td> NULL </td></tr></table>>;];
+	{
+		rank = 4;
+		node504000000090;
+	}
+		node5040000000d0;
+	node504000000110->node5040000000d0[color = "orange"];
+	node5040000000d0 [shape="plain"; style ="filled"; fillcolor ="lightskyblue2"; label = <<table><tr><td colspan = "2" > 0x5040000000d0 </td></tr> <tr><td colspan = "2" > parent = 0x504000000110 </td></tr> <tr><td width = "100" colspan = "2" > type = VARIABLE </td></tr> <tr><td width = "100" colspan = "2" > val = 1 (b) </td></tr> <tr><td> NULL </td><td> NULL </td></tr></table>>;];
+	{
+		rank = 4;
+		node5040000000d0;
+	}
+		node504000000290;
+	node5040000002d0->node504000000290[color = "orange"];
+	node504000000290 [shape="plain"; style ="filled"; fillcolor ="orange"; label = <<table><tr><td colspan = "2" > 0x504000000290 </td></tr> <tr><td colspan = "2" > parent = 0x5040000002d0 </td></tr> <tr><td width = "100" colspan = "2" > type = OPERATOR </td></tr> <tr><td width = "100" colspan = "2" > val = DIV </td></tr> <tr><td> 0x5040000001d0 </td><td> 0x504000000250 </td></tr></table>>;];
+	{
+		rank = 2;
+		node504000000290;
+	}
+		node5040000001d0;
+	node504000000290->node5040000001d0[color = "orange"];
+	node5040000001d0 [shape="plain"; style ="filled"; fillcolor ="orange"; label = <<table><tr><td colspan = "2" > 0x5040000001d0 </td></tr> <tr><td colspan = "2" > parent = 0x504000000290 </td></tr> <tr><td width = "100" colspan = "2" > type = OPERATOR </td></tr> <tr><td width = "100" colspan = "2" > val = TH </td></tr> <tr><td> NULL </td><td> 0x504000000190 </td></tr></table>>;];
+	{
+		rank = 3;
+		node5040000001d0;
+	}
+		node504000000190;
+	node5040000001d0->node504000000190[color = "orange"];
+	node504000000190 [shape="plain"; style ="filled"; fillcolor ="lightskyblue2"; label = <<table><tr><td colspan = "2" > 0x504000000190 </td></tr> <tr><td colspan = "2" > parent = 0x5040000001d0 </td></tr> <tr><td width = "100" colspan = "2" > type = VARIABLE </td></tr> <tr><td width = "100" colspan = "2" > val = 0 (a) </td></tr> <tr><td> NULL </td><td> NULL </td></tr></table>>;];
+	{
+		rank = 4;
+		node504000000190;
+	}
+		node504000000250;
+	node504000000290->node504000000250[color = "orange"];
+	node504000000250 [shape="plain"; style ="filled"; fillcolor ="orange"; label = <<table><tr><td colspan = "2" > 0x504000000250 </td></tr> <tr><td colspan = "2" > parent = 0x504000000290 </td></tr> <tr><td width = "100" colspan = "2" > type = OPERATOR </td></tr> <tr><td width = "100" colspan = "2" > val = EXP </td></tr> <tr><td> NULL </td><td> 0x504000000210 </td></tr></table>>;];
+	{
+		rank = 3;
+		node504000000250;
+	}
+		node504000000210;
+	node504000000250->node504000000210[color = "orange"];
+	node504000000210 [shape="plain"; style ="filled"; fillcolor ="lightskyblue2"; label = <<table><tr><td colspan = "2" > 0x504000000210 </td></tr> <tr><td colspan = "2" > parent = 0x504000000250 </td></tr> <tr><td width = "100" colspan = "2" > type = VARIABLE </td></tr> <tr><td width = "100" colspan = "2" > val = 2 (c) </td></tr> <tr><td> NULL </td><td> NULL </td></tr></table>>;];
+	{
+		rank = 4;
+		node504000000210;
+	}
+}
