@@ -4,7 +4,6 @@
 
 #include "tree.h"
 #include "treeDump.h"
-#include "mathDump.h"
 #include "parseFileDataBase.h"
 #include "mathematicalCalculator.h"
 

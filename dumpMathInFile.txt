@@ -1,1 +1,3 @@
-sin(a)+5*b-th(a)/exp(c)$
+y=sin(x+3)gusi
+b=(th(5)/18)gusi
+abcd=56gusi$

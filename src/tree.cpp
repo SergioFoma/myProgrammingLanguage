@@ -54,6 +54,9 @@ treeErrors initializationDataInNode( node_t** node, typeOfDataInNode typeOfData,
             (*node)->nodeValueType = VARIABLE;
             (*node)->data.variableIndexInArray = element.variableIndexInArray;
             break;
+        case STATEMENT:
+            (*node)->nodeValueType = STATEMENT;
+            (*node)->data.statement = element.statement;
         default:
             return NOT_CORRECT_TYPE_OF_DATA;
             break;
@@ -87,4 +90,23 @@ void destroyTree( tree_t* tree ){
     destroyNode( tree->rootTree );
 
     *tree = {};
+}
+
+node_t* newStatementNode( typeOfDataInNode nodeType, typeOfStatement typeOfStatement, node_t* leftNode, node_t* rightNode ){
+
+    node_t* newStatementNode = NULL;
+    treeElem_t data = {};
+    data.statement = typeOfStatement;
+
+    initNode( &newStatementNode, nodeType, data );
+    newStatementNode->left = leftNode;
+    newStatementNode->right = rightNode;
+    if( newStatementNode->left ){
+        newStatementNode->left->parent = newStatementNode;
+    }
+    if( newStatementNode->right ){
+        newStatementNode->right->parent = newStatementNode;
+    }
+
+    return newStatementNode;
 }

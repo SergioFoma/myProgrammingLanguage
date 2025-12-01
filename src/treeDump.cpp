@@ -27,10 +27,15 @@ void dumpNode( node_t* node, int rank, FILE* treeFile ){
                             "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %s </td></tr> ",
                             ( unsigned long )node, node, node->parent, stringNodeValueType, getStringOfMathOperator( node )  );
     }
-    else if( node->nodeValueType == VARIABLE){
+    else if( node->nodeValueType == VARIABLE ){
         fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"lightskyblue2\"; label = "
                             "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %lu (%s) </td></tr> ",
                             ( unsigned long )node, node, node->parent, stringNodeValueType, node->data.variableIndexInArray, getStringOfVariable( node )  );
+    }
+    else if( node->nodeValueType == STATEMENT ){
+        fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"green\"; label = "
+                            "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %s </td></tr> ",
+                            ( unsigned long )node, node, node->parent, stringNodeValueType, getStringOfStatement( node )  );
     }
 
     if( node->left ){
@@ -136,6 +141,9 @@ void dumpNodeInFile( const node_t* node, FILE* fileForPrint ){
     else if( node->nodeValueType == OPERATOR ){
         fprintf( fileForPrint, "( %s ", getViewOfMathOperation( node ) );
     }
+    else if( node->nodeValueType == STATEMENT ){
+        fprintf( fileForPrint, "( %s ", getViewOfStatement( node ) );
+    }
 
     if( node->left ){
         dumpNodeInFile( node->left, fileForPrint);
@@ -176,6 +184,9 @@ static void dumpTheSortedNodeInFile( const node_t* node, FILE* fileForPrint ){
     }
     else if( node->nodeValueType == OPERATOR ){
         fprintf( fileForPrint, " %s ", getViewOfMathOperation( node ) );
+    }
+    else if( node->nodeValueType == STATEMENT ){
+        fprintf( fileForPrint, " %s ", getViewOfStatement( node ) );
     }
 
     if( node->right ){
@@ -240,6 +251,30 @@ const char* getViewOfMathOperation( const node_t* node ){
     for( size_t mathIndex = 0; mathIndex < sizeOfMathArray; mathIndex++ ){
         if( node->data.mathOperation ==  arrayWithMathInfo[ mathIndex ].mathOperation ){
             return arrayWithMathInfo[ mathIndex ].viewOfMathOperationInFile;
+        }
+    }
+
+    return NULL;
+}
+
+const char* getStringOfStatement( const node_t* node ){
+    assert( node );
+
+    for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
+        if( node->data.statement == arrayWithStatements[ statementIndex ].statement ){
+            return arrayWithStatements[ statementIndex ].nameOfStatement;
+        }
+    }
+
+    return NULL;
+}
+
+const char* getViewOfStatement( const node_t* node ){
+    assert( node );
+
+    for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
+        if( node->data.statement == arrayWithStatements[ statementIndex ].statement ){
+            return arrayWithStatements[ statementIndex ].viewOfStatementInFile;
         }
     }
 

@@ -13,6 +13,10 @@ const char* getStringOfVariable( const node_t* node );
 
 const char* getViewOfMathOperation( const node_t* node );
 
+const char* getStringOfStatement( const node_t* node );
+
+const char* getViewOfStatement( const node_t* node );
+
 treeErrors dumpTree( tree_t* tree );
 
 void dumpNodeInFile( const node_t* node, FILE* fileForWrite );

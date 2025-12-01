@@ -1,5 +1,7 @@
-array with variables[ 3 ] = {
-	{ a  , 0  },
-	{ b  , 1  },
-	{ c  , 2  },
+array with variables[ 4 ] = {
+	{ y  , 0  },
+	{ x  , 1  },
+	{ b  , 2  },
+	{ abcd  , 3  },
 };
+capacity = 8

@@ -21,7 +21,8 @@ enum treeErrors {
 enum typeOfDataInNode {
     NUMBER      = 0,
     OPERATOR    = 1,
-    VARIABLE    = 2
+    VARIABLE    = 2,
+    STATEMENT   = 3
 };
 
 #define typeOfRoot NUMBER
@@ -50,10 +51,16 @@ enum typeOfMathOperation {
     EXP     = 20
 };
 
+enum typeOfStatement {
+    ASSIGNMENT         = 0,
+    OPERATOR_END       = 1
+};
+
 union treeElem_t {
     double number;
     size_t variableIndexInArray;
     typeOfMathOperation mathOperation;
+    typeOfStatement statement;
 };
 
 struct node_t {
@@ -87,5 +94,7 @@ treeErrors insertNode( tree_t* root, treeElem_t element );
 void destroyNode( node_t* node );
 
 void destroyTree( tree_t* node );
+
+node_t* newStatementNode( typeOfDataInNode nodeType, typeOfStatement typeOfStatement, node_t* leftNode, node_t* rightNode );
 
 #endif

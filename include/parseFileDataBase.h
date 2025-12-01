@@ -46,11 +46,15 @@ node_t* createNodeFromFile( char** ptrOnSymbolInPosition );
 
 char* readNodeNameFromFile( char** ptrOnSymbolInPosition );
 
-expertSystemErrors buildNewNode( node_t** node, char* nodeName );
+expertSystemErrors buildnewMathNode( node_t** node, char* nodeName );
 
 expertSystemErrors createTreeByRecursiveDescent( tree_t* tree );
 
 node_t* getGeneral( char** ptrOnSymbolInPosition );
+
+node_t* getAssignment( char** ptrOnSymbolInPosition );
+
+const char* getEndOfAssignment();
 
 node_t* getExpression( char** ptrOnSymbolInPosition );
 
@@ -72,7 +76,11 @@ void isEnoughSize( char** lineWithWord, size_t* lineIndex, size_t* sizeOfLine );
 
 bool checkingOnFunction( char* lineWithWord );
 
+bool checkingOnStatement( char* lineWithWord );
+
 node_t* getNumber( char** ptrOnSymbolInPosition );
+
+void cleanLineWithCode( char** ptrOnSymbolInPosition );
 
 #endif
 

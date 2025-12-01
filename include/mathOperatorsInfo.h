@@ -23,10 +23,7 @@ struct informationWithMathOperators {
     typeOfMathOperation mathOperation;
     const char* nameOfMathOperation;
     const char* viewOfMathOperationInFile;
-    void(*printInLatex)( FILE* fileForLatex, node_t* node );
-    const char* viewInLatex;
     double(*doMathOperation)( double firstNumber, double doubleSecondNumber );
-    node_t*(*differentiationFunc)( const node_t* node, size_t variable, FILE* fileForDump );
     functionClasses functionClass;
 };
 
@@ -46,5 +43,13 @@ struct informationWithVariablesArray {
 extern informationWithVariables* arrayWithVariables;
 extern informationWithVariablesArray infoForVarArray;
 
+struct informationWithStatements {
+    typeOfStatement statement;
+    const char* nameOfStatement;
+    const char* viewOfStatementInFile;
+};
+
+extern informationWithStatements arrayWithStatements[];
+extern const size_t sizeOfStatementArray;
 
 #endif
