@@ -31,7 +31,8 @@ const size_t sizeOfMathArray = sizeof( arrayWithMathInfo ) / sizeof( arrayWithMa
 
 informationWithStatements arrayWithStatements[] = {
         { ASSIGNMENT    ,   "ASSIGNMENT"    ,   "pabgo_govnito"          },
-        { OPERATOR_END  ,   "OP_END"        ,   "gusi"                   }
+        { OPERATOR_END  ,   "OP_END"        ,   "gusi"                   },
+        { IF          ,     "IF"            ,   "wool"                   }
 };
 const size_t sizeOfStatementArray = sizeof( arrayWithStatements ) / sizeof( arrayWithStatements[0] );
 

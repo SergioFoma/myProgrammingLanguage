@@ -53,7 +53,8 @@ enum typeOfMathOperation {
 
 enum typeOfStatement {
     ASSIGNMENT         = 0,
-    OPERATOR_END       = 1
+    OPERATOR_END       = 1,
+    IF                 = 2
 };
 
 union treeElem_t {

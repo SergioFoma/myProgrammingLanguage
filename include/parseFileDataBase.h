@@ -52,7 +52,11 @@ expertSystemErrors createTreeByRecursiveDescent( tree_t* tree );
 
 node_t* getGeneral( char** ptrOnSymbolInPosition );
 
+node_t* getOperator( char** ptrOnSymbolInPosition );
+
 node_t* getAssignment( char** ptrOnSymbolInPosition );
+
+node_t* getCondition( char** ptrOnSymbolInPosition );
 
 const char* getEndOfAssignment();
 

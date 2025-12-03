@@ -1,3 +1,8 @@
-y pabgo_govnito 5 + 6 / 3 gusi
-z pabgo_govnito y * 2 gusi $
-
+wool( x ){
+    tree pabgo_govnito 7 gusi
+    wool( 143 ) second_if pabgo_govnito 143 gusi
+    wool( sin( x ) ){
+        a pabgo_govnito 7 gusi
+    } gusi
+} gusi
+$

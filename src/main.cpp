@@ -13,7 +13,7 @@ int main(){
 
     createTreeByRecursiveDescent( &tree );
 
-    summaryOfConstants( &tree );
+    //summaryOfConstants( &tree );
 
     dumpTree( &tree );
     destroyTree( &tree );
