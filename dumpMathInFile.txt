@@ -1,3 +1,2 @@
-y=sin(x+3)gusi
-b=(th(5)/18)gusi
-abcd=56gusi$
+a12_b pabgo_govnito sqrt( 17 ) gusi
+const_2 pabgo_govnito ctg( sh( 17 / 5 ) ) gusi $

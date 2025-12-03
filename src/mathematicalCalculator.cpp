@@ -137,7 +137,22 @@ void optimisationConsts( node_t* node ){
 
                 deleteL( node );
                 deleteR( node );
-                break;
+                return ;
+            }
+        }
+    }
+
+    if( node->right && node->left == NULL && node->right->nodeValueType == NUMBER ){
+
+        for( size_t opWithOneArg = 0; opWithOneArg < sizeOfMathArray; opWithOneArg++ ){
+            if( node->data.mathOperation == arrayWithMathInfo[ opWithOneArg ].mathOperation ){
+                double resultOfOptimisation = arrayWithMathInfo[ opWithOneArg ].doMathOperation( 0  ,
+                                                                                                    node->right->data.number);
+                node->nodeValueType = NUMBER;
+                node->data.number = resultOfOptimisation;
+
+                deleteR( node );
+                return ;
             }
         }
     }
@@ -282,19 +297,6 @@ double doMathOperations( node_t* node, double firstNumber, double secondNumber )
     return 0;
 }
 
-double doAdd( double firstNumber, double secondNumber ){
-    return firstNumber + secondNumber;
-}
-double doSub( double firstNumber, double secondNumber ){
-    return firstNumber - secondNumber;
-}
-double doMul( double firstNumber, double secondNumber ){
-    return firstNumber * secondNumber;
-}
-double doDiv( double firstNumber, double secondNumber ){
-    return firstNumber / secondNumber;
-}
-
 void destroyArrayWithVariables(){
     for( size_t varIndex = 0; varIndex < infoForVarArray.freeIndexNow; varIndex++ ){
         free( arrayWithVariables[ varIndex ].nameOfVariable );
@@ -323,4 +325,65 @@ void printArrayWithVariablesInFile(){
     fprintf( fileForVar, "};\ncapacity = %lu", infoForVarArray.capacity );
 
     free( nameOfFileForVar );
+}
+
+double doAdd( double firstNumber, double secondNumber ){
+    return firstNumber + secondNumber;
+}
+double doSub( double firstNumber, double secondNumber ){
+    return firstNumber - secondNumber;
+}
+double doMul( double firstNumber, double secondNumber ){
+    return firstNumber * secondNumber;
+}
+double doDiv( double firstNumber, double secondNumber ){
+    return firstNumber / secondNumber;
+}
+double doLn( double firstNumber, double secondNumber ){
+    return log( secondNumber );
+}
+double doPow( double firstNumber, double secondNumber ){
+    return pow( firstNumber, secondNumber );
+}
+double doSin( double firstNumber, double secondNumber ){
+    return sin( secondNumber );
+}
+double doCos( double firstNumber, double secondNumber ){
+    return cos( secondNumber );
+}
+double doTg( double firstNumber, double secondNumber ){
+    return tan( secondNumber );
+}
+double doCtg( double firstNumber, double secondNumber ){
+    return ( 1 / tan( secondNumber ) );
+}
+double doArcsin( double firstNumber, double secondNumber ){
+    return asin( secondNumber );
+}
+double doArccos( double firstNumber, double secondNumber ){
+    return acos( secondNumber );
+}
+double doArctg( double firstNumber, double secondNumber ){
+    return atan( secondNumber );
+}
+double doArcctg( double firstNumber, double secondNumber ){
+    return ( 1 / atan( secondNumber ) );
+}
+double doSh( double firstNumber, double secondNumber ){
+    return sinh( secondNumber );
+}
+double doCh( double firstNumber, double secondNumber ){
+    return cosh( secondNumber );
+}
+double doTh( double firstNumber, double secondNumber ){
+    return tanh( secondNumber );
+}
+double doCth( double firstNumber, double secondNumber ){
+    return ( 1 / tanh( secondNumber ) );
+}
+double doExp( double firstNumber, double secondNumber ){
+    return exp( secondNumber );
+}
+double doSqrt( double firstNumber, double secondNumber ){
+    return sqrt( secondNumber );
 }

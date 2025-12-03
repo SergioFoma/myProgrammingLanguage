@@ -57,6 +57,7 @@ treeErrors initializationDataInNode( node_t** node, typeOfDataInNode typeOfData,
         case STATEMENT:
             (*node)->nodeValueType = STATEMENT;
             (*node)->data.statement = element.statement;
+            break;
         default:
             return NOT_CORRECT_TYPE_OF_DATA;
             break;

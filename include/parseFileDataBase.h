@@ -72,6 +72,8 @@ node_t* makeNodeWithNewVariable( char* lineWithVar, char** ptrOnSymbolInPosition
 
 size_t readingWord( char** lineWithWord, char** ptrOnSymbolInPosition );
 
+size_t readingVariable( char** lineWithVariable, char** ptrOnSymbolInPosition );
+
 void isEnoughSize( char** lineWithWord, size_t* lineIndex, size_t* sizeOfLine );
 
 bool checkingOnFunction( char* lineWithWord );

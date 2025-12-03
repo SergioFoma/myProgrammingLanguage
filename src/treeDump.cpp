@@ -33,7 +33,7 @@ void dumpNode( node_t* node, int rank, FILE* treeFile ){
                             ( unsigned long )node, node, node->parent, stringNodeValueType, node->data.variableIndexInArray, getStringOfVariable( node )  );
     }
     else if( node->nodeValueType == STATEMENT ){
-        fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"green\"; label = "
+        fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"slateblue1\"; label = "
                             "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %s </td></tr> ",
                             ( unsigned long )node, node, node->parent, stringNodeValueType, getStringOfStatement( node )  );
     }

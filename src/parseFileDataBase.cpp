@@ -135,14 +135,10 @@ node_t* getGeneral( char** ptrOnSymbolInPosition ){
     do{
         node_t* newExpression = getAssignment( ptrOnSymbolInPosition );
 
-        printf( "char gen = %c\n", **ptrOnSymbolInPosition );
-
         char* lineWithAssignment = NULL;
         size_t lineLen = readingWord( &lineWithAssignment, ptrOnSymbolInPosition );
 
         const char* endOfAssignment = getEndOfAssignment();
-
-        printf( "\nline = %s\n", lineWithAssignment );
 
         if( strcmp( lineWithAssignment, endOfAssignment ) == 0 ){
             *ptrOnSymbolInPosition += lineLen;
@@ -150,10 +146,13 @@ node_t* getGeneral( char** ptrOnSymbolInPosition ){
         }
 
         expression = newStatementNode( STATEMENT, OPERATOR_END, expression, newExpression );
-        printf( "char gen after while = %c\n", **ptrOnSymbolInPosition );
+
         free( lineWithAssignment );
+        cleanLineWithCode( ptrOnSymbolInPosition );
     }while( **ptrOnSymbolInPosition != '$' );
 
+
+    printf( "char stoped = %c", **ptrOnSymbolInPosition );
     return expression;
 }
 
@@ -161,17 +160,26 @@ node_t* getAssignment( char** ptrOnSymbolInPosition ){
     assert( ptrOnSymbolInPosition );
     assert( *ptrOnSymbolInPosition );
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     node_t* left = getVariable( ptrOnSymbolInPosition );
 
-    printf( " char start = %c\n", **ptrOnSymbolInPosition );
+    char* lineForAss = NULL;
+    size_t lineLen = readingWord( &lineForAss, ptrOnSymbolInPosition );
 
-    if( **ptrOnSymbolInPosition == '=' ){
-        ++(*ptrOnSymbolInPosition);
-        printf( "ptr after = %c\n", **ptrOnSymbolInPosition );
-        node_t* right = getExpression( ptrOnSymbolInPosition );
-        return newStatementNode( STATEMENT, ASSIGNMENT, left, right );
+    for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
+        if( arrayWithStatements[ statementIndex ].statement == ASSIGNMENT &&
+            strcmp( lineForAss, arrayWithStatements[ statementIndex ].viewOfStatementInFile ) == 0 ){
+
+            (*ptrOnSymbolInPosition) += strlen( lineForAss );
+            node_t* right = getExpression( ptrOnSymbolInPosition );
+            cleanLineWithCode( ptrOnSymbolInPosition );
+            free( lineForAss );
+            return newStatementNode( STATEMENT, ASSIGNMENT, left, right );
+        }
     }
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
+    free( lineForAss );
     return NULL;
 }
 
@@ -189,6 +197,7 @@ node_t* getExpression( char** ptrOnSymbolInPosition ){
     assert( ptrOnSymbolInPosition );
     assert( *ptrOnSymbolInPosition );
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     node_t* left = getTerm( ptrOnSymbolInPosition );
 
     while( **ptrOnSymbolInPosition == '+' || **ptrOnSymbolInPosition == '-' ){
@@ -205,6 +214,7 @@ node_t* getExpression( char** ptrOnSymbolInPosition ){
         }
     }
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     return left;
 }
 
@@ -212,6 +222,7 @@ node_t* getTerm( char** ptrOnSymbolInPosition ){
     assert( ptrOnSymbolInPosition );
     assert( *ptrOnSymbolInPosition );
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     node_t* left = getPrimaryExpression( ptrOnSymbolInPosition );
 
 
@@ -219,6 +230,7 @@ node_t* getTerm( char** ptrOnSymbolInPosition ){
         char operation = **ptrOnSymbolInPosition;
         ++(*ptrOnSymbolInPosition);
 
+        cleanLineWithCode( ptrOnSymbolInPosition );
         node_t* right = getPrimaryExpression( ptrOnSymbolInPosition );
 
         if( operation == '*' ){
@@ -229,6 +241,7 @@ node_t* getTerm( char** ptrOnSymbolInPosition ){
         }
     }
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     return left;
 }
 
@@ -236,6 +249,7 @@ node_t* getPrimaryExpression( char** ptrOnSymbolInPosition ){
     assert( ptrOnSymbolInPosition );
     assert( *ptrOnSymbolInPosition );
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
 
     if( **ptrOnSymbolInPosition == '(' ){
         ++(*ptrOnSymbolInPosition);
@@ -272,14 +286,17 @@ node_t* getFunctionWithOneArgument( char** ptrOnSymbolInPosition ){
                 ++(*ptrOnSymbolInPosition);
             }
             node_t* funcNode = getExpression( ptrOnSymbolInPosition );
+
             if( **ptrOnSymbolInPosition == ')' ){
                 ++(*ptrOnSymbolInPosition);
             }
             free( lineForFunc );
+            cleanLineWithCode( ptrOnSymbolInPosition );
             return newMathNode( OPERATOR, arrayWithMathInfo[ indexOfMathFunc ].mathOperation, NULL, funcNode );
         }
     }
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     free( lineForFunc );
     return NULL;
 }
@@ -290,7 +307,7 @@ node_t* getVariable( char** ptrOnSymbolInPosition ){
     assert( *ptrOnSymbolInPosition );
 
     char* lineWithVar = NULL;
-    size_t lineLen = readingWord( &lineWithVar, ptrOnSymbolInPosition );
+    size_t lineLen = readingVariable( &lineWithVar, ptrOnSymbolInPosition );
 
     bool isFunction = checkingOnFunction( lineWithVar );
     if( isFunction ){
@@ -313,6 +330,7 @@ node_t* getVariable( char** ptrOnSymbolInPosition ){
             node_t* nodeWithVar = NULL;
             initNode( &nodeWithVar, VARIABLE, data );
             *ptrOnSymbolInPosition += lineLen;
+            cleanLineWithCode( ptrOnSymbolInPosition );
             free( lineWithVar );
             return nodeWithVar;
         }
@@ -338,25 +356,55 @@ node_t* makeNodeWithNewVariable( char* lineWithVar, char** ptrOnSymbolInPosition
     initNode( &nodeWithVar, VARIABLE, data );
     ++(infoForVarArray.freeIndexNow);
     *ptrOnSymbolInPosition += lineLen;
-    return nodeWithVar;
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
+    return nodeWithVar;
 }
 
 size_t readingWord( char** lineWithWord, char** ptrOnSymbolInPosition ){
     assert( lineWithWord );
+    assert( ptrOnSymbolInPosition );
+    assert( *ptrOnSymbolInPosition );
+
+    cleanLineWithCode( ptrOnSymbolInPosition );
 
     size_t lineIndex = 0;
     size_t sizeOfLine = startSizeForWord;
     *lineWithWord = (char*)calloc( sizeOfLine, sizeof( char ) );
 
-    while( islower( (*ptrOnSymbolInPosition)[ lineIndex ] ) ){
+    while( islower( (*ptrOnSymbolInPosition)[ lineIndex ] ) || (*ptrOnSymbolInPosition)[ lineIndex ] == '_' ){
             isEnoughSize( lineWithWord, &lineIndex, &sizeOfLine );
             (*lineWithWord)[ lineIndex ] = (*ptrOnSymbolInPosition)[ lineIndex ];
             ++lineIndex;
     }
     (*lineWithWord)[ lineIndex ] = '\0';
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     return lineIndex;
+}
+
+size_t readingVariable( char** lineWithVariable, char** ptrOnSymbolInPosition ){
+    assert( lineWithVariable );
+    assert( ptrOnSymbolInPosition );
+    assert( *ptrOnSymbolInPosition );
+
+    cleanLineWithCode( ptrOnSymbolInPosition );
+
+    size_t lineIndex = 0;
+    size_t sizeOfLine = startSizeForWord;
+    *lineWithVariable = (char*)calloc( sizeOfLine, sizeof( char ) );
+
+    while( islower( (*ptrOnSymbolInPosition)[ lineIndex ] ) || (*ptrOnSymbolInPosition)[ lineIndex ] == '_' ||
+          ( '0' <= (*ptrOnSymbolInPosition)[ lineIndex ]  && (*ptrOnSymbolInPosition)[ lineIndex ]  <= '9')  ){
+            isEnoughSize( lineWithVariable, &lineIndex, &sizeOfLine );
+            (*lineWithVariable)[ lineIndex ] = (*ptrOnSymbolInPosition)[ lineIndex ];
+            ++lineIndex;
+    }
+    (*lineWithVariable)[ lineIndex ] = '\0';
+
+    cleanLineWithCode( ptrOnSymbolInPosition );
+    return lineIndex;
+
 }
 
 void isEnoughSize( char** lineWithWord, size_t* lineIndex, size_t* sizeOfLine ){
@@ -401,6 +449,7 @@ node_t* getNumber( char** ptrOnSymbolInPosition ){
 
     double value = 0;
     bool statusOfReadNumber = false;
+    cleanLineWithCode( ptrOnSymbolInPosition );
 
     while( '0' <= (**ptrOnSymbolInPosition) &&
                   (**ptrOnSymbolInPosition) <= '9' ){
@@ -415,6 +464,7 @@ node_t* getNumber( char** ptrOnSymbolInPosition ){
         exit( 0 );
     }*/
 
+    cleanLineWithCode( ptrOnSymbolInPosition );
     return makeConstNode( value );
 }
 

@@ -1,7 +1,5 @@
-array with variables[ 4 ] = {
-	{ y  , 0  },
-	{ x  , 1  },
-	{ b  , 2  },
-	{ abcd  , 3  },
+array with variables[ 2 ] = {
+	{ a12_b  , 0  },
+	{ const_2  , 1  },
 };
-capacity = 8
+capacity = 4
