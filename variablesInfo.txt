@@ -1,5 +1,8 @@
 array with variables[ 2 ] = {
-	{ a12_b  , 0  },
-	{ const_2  , 1  },
+	{ y  , 0  },
+	{ z  , 1  },
 };
 capacity = 4
+
+var[0] = 7
+var[1] = 14

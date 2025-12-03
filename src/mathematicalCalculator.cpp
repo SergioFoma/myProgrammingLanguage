@@ -9,9 +9,6 @@
 
 const double epsilon = 1e-5;
 
-const size_t sizeOfArrayWithVariable = 1;
-double arrayWithVariableValue[ sizeOfArrayWithVariable] = {};
-
 #define ADD_( leftNode, rightNode ) newMathNode( OPERATOR, ADD, leftNode, rightNode )
 #define SUB_( leftNode, rightNode ) newMathNode( OPERATOR, SUB, leftNode, rightNode )
 #define MUL_( leftNode, rightNode ) newMathNode( OPERATOR, MUL, leftNode, rightNode )
@@ -125,6 +122,17 @@ void optimisationConsts( node_t* node ){
         optimisationConsts( node->right );
     }
 
+    if( optimisationFuncWithTwoArg( node ) ){
+        return ;
+    }
+    if( optimisationFuncWithOneArg( node ) ){
+        return ;
+    }
+}
+
+bool optimisationFuncWithTwoArg( node_t* node ){
+    assert( node );
+
     if( node->left && node->right &&
         node->left->nodeValueType == NUMBER && node->right->nodeValueType == NUMBER ){
 
@@ -137,10 +145,15 @@ void optimisationConsts( node_t* node ){
 
                 deleteL( node );
                 deleteR( node );
-                return ;
+                return true;
             }
         }
     }
+    return false;
+}
+
+bool optimisationFuncWithOneArg( node_t* node ){
+    assert( node );
 
     if( node->right && node->left == NULL && node->right->nodeValueType == NUMBER ){
 
@@ -152,10 +165,11 @@ void optimisationConsts( node_t* node ){
                 node->data.number = resultOfOptimisation;
 
                 deleteR( node );
-                return ;
+                return true;
             }
         }
     }
+    return false;
 }
 
 void removingNeutralElements( tree_t* treeForOptimisation ){
@@ -178,6 +192,18 @@ void optimisationNeutralElem( node_t* node ){
         optimisationNeutralElem( node->right );
     }
 
+    if( mulOnZero( node ) )                 return;
+    if( mulOnSingleLeftNode( node ) )       return;
+    if( mulOnSingleRightNode( node ) )      return;
+    if( divideZeroByNum( node ) )           return;
+    if( addWithLeftZeroNode( node ) )       return;
+    if( addWithRightZeroNode( node ) )      return;
+
+}
+
+bool mulOnZero( node_t* node ){
+    assert( node );
+
     if(node->nodeValueType == OPERATOR && node->data.mathOperation == MUL &&
       (node->left->nodeValueType == NUMBER && fabs( node->left->data.number ) < epsilon ||
        node->right->nodeValueType == NUMBER && fabs( node->right->data.number ) < epsilon )){
@@ -188,9 +214,15 @@ void optimisationNeutralElem( node_t* node ){
 
         deleteL( node );
         deleteR( node );
-
+        return true;
     }
-    else if( node->nodeValueType == OPERATOR && node->data.mathOperation == MUL && node->left->nodeValueType == NUMBER &&
+    return false;
+}
+
+bool mulOnSingleLeftNode( node_t* node ){
+    assert( node );
+
+    if( node->nodeValueType == OPERATOR && node->data.mathOperation == MUL && node->left->nodeValueType == NUMBER &&
              fabs( node->left->data.number  - 1 ) < epsilon ){
 
             if( node->parent->right == node ){
@@ -201,8 +233,15 @@ void optimisationNeutralElem( node_t* node ){
                 node->parent->left = copyR( node );
                 deleteNode( node );
             }
+            return true;
     }
-    else if( node->nodeValueType == OPERATOR && node->data.mathOperation == MUL && node->right->nodeValueType == NUMBER &&
+    return false;
+}
+
+bool mulOnSingleRightNode( node_t* node ){
+    assert( node );
+
+    if( node->nodeValueType == OPERATOR && node->data.mathOperation == MUL && node->right->nodeValueType == NUMBER &&
              fabs( node->right->data.number  - 1 ) < epsilon ){
 
             if( node->parent->right == node ){
@@ -213,8 +252,15 @@ void optimisationNeutralElem( node_t* node ){
                 node->parent->left = copyL( node );
                 deleteNode( node );
             }
+            return true;
     }
-    else if( node->nodeValueType == OPERATOR && node->data.mathOperation == DIV && node->left->nodeValueType == NUMBER &&
+    return false;
+}
+
+bool divideZeroByNum( node_t* node ){
+    assert( node );
+
+    if( node->nodeValueType == OPERATOR && node->data.mathOperation == DIV && node->left->nodeValueType == NUMBER &&
              fabs( node->left->data.number ) < epsilon ){
 
             node->nodeValueType = NUMBER;
@@ -222,8 +268,15 @@ void optimisationNeutralElem( node_t* node ){
 
             deleteL( node );
             deleteR( node );
+            return true;
     }
-    else if( node->nodeValueType == OPERATOR && node->data.mathOperation == ADD && node->left->nodeValueType == NUMBER &&
+    return false;
+}
+
+bool addWithLeftZeroNode( node_t* node ){
+    assert( node );
+
+    if( node->nodeValueType == OPERATOR && node->data.mathOperation == ADD && node->left->nodeValueType == NUMBER &&
             fabs( node->left->data.number ) < epsilon ){
 
             if( node->parent->right == node ){
@@ -234,8 +287,15 @@ void optimisationNeutralElem( node_t* node ){
                 node->parent->left = copyR( node );
                 deleteNode( node );
             }
+            return true;
     }
-    else if( node->nodeValueType == OPERATOR && node->data.mathOperation == ADD && node->right->nodeValueType == NUMBER &&
+    return false;
+}
+
+bool addWithRightZeroNode( node_t* node ){
+    assert( node );
+
+    if( node->nodeValueType == OPERATOR && node->data.mathOperation == ADD && node->right->nodeValueType == NUMBER &&
              fabs( node->right->data.number ) < epsilon ){
 
             if( node->parent->right == node ){
@@ -246,18 +306,14 @@ void optimisationNeutralElem( node_t* node ){
                 node->parent->left = copyL( node );
                 deleteNode( node );
             }
+            return true;
     }
+    return false;
 }
 
 mathErrors calculateTheFunctionValue( tree_t* tree ){
     if( tree == NULL ){
         return NULL_PTR;
-    }
-
-    for( size_t variableIndex = 0; variableIndex < sizeOfArrayWithVariable; variableIndex++ ){
-        colorPrintf( NOMODE, BLUE, "Enter the value of variable : " );
-        scanf( "%lg", arrayWithVariableValue + variableIndex  );
-        cleanBuffer();
     }
 
     double resultOfCalculate = calculateValue( tree->rootTree );
@@ -303,6 +359,7 @@ void destroyArrayWithVariables(){
     }
 
     free( arrayWithVariables );
+    free( arrayWithVariableValue );
 }
 
 void printArrayWithVariablesInFile(){
@@ -322,7 +379,11 @@ void printArrayWithVariablesInFile(){
     for( size_t varIndex = 0; varIndex < infoForVarArray.freeIndexNow; varIndex++ ){
         fprintf( fileForVar, "\t{ %s  , %lu  },\n", arrayWithVariables[ varIndex ].nameOfVariable, arrayWithVariables[ varIndex ].variableIndexInArray );
     }
-    fprintf( fileForVar, "};\ncapacity = %lu", infoForVarArray.capacity );
+    fprintf( fileForVar, "};\ncapacity = %lu\n\n", infoForVarArray.capacity );
+
+    for( size_t varIndex = 0; varIndex < infoForVarArray.freeIndexNow; varIndex++ ){
+        fprintf( fileForVar, "var[%lu] = %lg\n", varIndex, arrayWithVariableValue[ varIndex ] );
+    }
 
     free( nameOfFileForVar );
 }

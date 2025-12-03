@@ -42,6 +42,7 @@ struct informationWithVariablesArray {
 
 extern informationWithVariables* arrayWithVariables;
 extern informationWithVariablesArray infoForVarArray;
+extern double* arrayWithVariableValue;
 
 struct informationWithStatements {
     typeOfStatement statement;

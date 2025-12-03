@@ -174,6 +174,7 @@ node_t* getAssignment( char** ptrOnSymbolInPosition ){
             node_t* right = getExpression( ptrOnSymbolInPosition );
             cleanLineWithCode( ptrOnSymbolInPosition );
             free( lineForAss );
+            arrayWithVariableValue[ left->data.variableIndexInArray ] = calculateValue( right );
             return newStatementNode( STATEMENT, ASSIGNMENT, left, right );
         }
     }
@@ -347,6 +348,7 @@ node_t* makeNodeWithNewVariable( char* lineWithVar, char** ptrOnSymbolInPosition
     if( infoForVarArray.freeIndexNow == infoForVarArray.capacity - 1){
             infoForVarArray.capacity *= 2;
             arrayWithVariables = (informationWithVariables*)realloc( arrayWithVariables, infoForVarArray.capacity * sizeof( informationWithVariables ) );
+            arrayWithVariableValue = (double*)realloc( arrayWithVariableValue, infoForVarArray.capacity * sizeof( double ) );
         }
 
     arrayWithVariables[ infoForVarArray.freeIndexNow ] = { lineWithVar , infoForVarArray.freeIndexNow  };

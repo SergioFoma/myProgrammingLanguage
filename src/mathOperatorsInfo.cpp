@@ -39,6 +39,8 @@ size_t startIndexForArrayWithVar = 0;
 informationWithVariables* arrayWithVariables = ( informationWithVariables* )calloc( startIndexForArrayWithVar + 1, sizeof( informationWithVariables ) );
 informationWithVariablesArray infoForVarArray = { startIndexForArrayWithVar + 1, startIndexForArrayWithVar };
 
+double* arrayWithVariableValue = (double*)calloc( startIndexForArrayWithVar + 1, sizeof( double ) );
+
 informationWithValueType arrayWithValueType[] = {
         { NUMBER,       "NUMBER"        },
         { VARIABLE,     "VARIABLE"      },

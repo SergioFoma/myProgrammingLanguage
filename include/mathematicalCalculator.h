@@ -31,9 +31,25 @@ void summaryOfConstants( tree_t* treeForOptimisation );
 
 void optimisationConsts( node_t* node );
 
+bool optimisationFuncWithTwoArg( node_t* node );
+
+bool optimisationFuncWithOneArg( node_t* node );
+
 void removingNeutralElements( tree_t* treeForOptimisation );
 
 void optimisationNeutralElem( node_t* node );
+
+bool mulOnZero( node_t* node );
+
+bool mulOnSingleLeftNode( node_t* node );
+
+bool mulOnSingleRightNode( node_t* node );
+
+bool divideZeroByNum( node_t* node );
+
+bool addWithLeftZeroNode( node_t* node );
+
+bool addWithRightZeroNode( node_t* node );
 
 statusOfFind variableSearching( const node_t* node, size_t variable );
 
