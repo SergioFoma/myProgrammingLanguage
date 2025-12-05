@@ -13,6 +13,7 @@
 #include "mathematicalCalculator.h"
 
 const size_t startSizeForWord = 7;
+const size_t startSizeForTokens = 20;
 
 expertSystemErrors writeInformationInFile( tree_t* tree ){
     if( tree == NULL ){
@@ -91,38 +92,188 @@ void destroyBufferInformation( bufferInformation *bufferFromFile ){
     bufferFromFile = NULL;
 }
 
+bufferInformation getBufferFromFile( FILE** fileWithBuffer ){
+
+    bufferInformation dataBaseFromFile = {};
+    char* nameOfFile = NULL;
+    size_t sizeOfAllocationMemory = 0;
+    ssize_t sizeOfLine = getlineWrapper( &nameOfFile, &sizeOfAllocationMemory, stdin );
+
+    if( sizeOfLine == -1 ){
+        free( nameOfFile );
+        return dataBaseFromFile;
+    }
+
+    FILE* fileForReading = fopen( nameOfFile, "r" );
+    if( fileForReading == NULL ){
+        colorPrintf( NOMODE, RED, "\ncan not open file:%s %s %d\n", __FILE__, __func__, __LINE__ );
+        free( nameOfFile );
+        return dataBaseFromFile;
+    }
+
+    errorCode statusOfReadFromFile = initBufferInformation( &dataBaseFromFile, fileForReading, nameOfFile );
+    if( statusOfReadFromFile != correct ){
+        free( nameOfFile );
+        return dataBaseFromFile;
+    }
+
+    *fileWithBuffer = fileForReading;
+    free( nameOfFile );
+    return dataBaseFromFile;
+}
+
+node_t** initializationTokens( size_t* countOfNodes ){
+    *countOfNodes = startSizeForTokens;
+    node_t** tokens = ( node_t** )calloc( *countOfNodes, sizeof( node_t* ) );
+    size_t startIndex = 0;
+    initializationNodeInArray( tokens, startIndex, countOfNodes );
+
+    return tokens;
+}
+
+void initializationNodeInArray( node_t** tokens, size_t startIndex, size_t* countOfTokens ){
+    assert( tokens );
+    assert( countOfTokens );
+
+    treeElem_t data = {};
+    data.statement = NO_TYPE;
+    for( ; startIndex < (*countOfTokens); startIndex++ ){
+        initNode( tokens + startIndex, STATEMENT, data );
+    }
+}
+
+node_t** lexAnalysis( char** symbol, size_t* countOfTokens ){
+    assert( symbol );
+    assert( *symbol );
+    assert( countOfTokens );
+
+    size_t tokensIndex = 0;
+    node_t** tokens = initializationTokens( countOfTokens );
+
+    while( **symbol != '\0' ){
+        if( tokensIndex == ( *countOfTokens - 1) ){
+            *countOfTokens *= 2;
+            tokens = ( node_t** )realloc( tokens, sizeof( node_t* ) * (*countOfTokens) );
+            initializationNodeInArray( tokens, tokensIndex + 1, countOfTokens );
+        }
+
+        bool isSearchStatement = false;
+        for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
+            const char* nameOfStatement = arrayWithStatements[ statementIndex ].viewOfStatementInFile;
+            size_t lenOfStatement = strlen( arrayWithStatements[ statementIndex ].viewOfStatementInFile );
+
+            if( strncmp( *symbol, nameOfStatement, lenOfStatement ) == 0 ){
+
+                tokens[ tokensIndex ]->nodeValueType = STATEMENT;
+                tokens[ tokensIndex ]->data.statement = arrayWithStatements[ statementIndex ].statement;
+                (*symbol) += lenOfStatement;
+                ++tokensIndex;
+                isSearchStatement = true;
+                break;
+            }
+        }
+        if( isSearchStatement ){
+            continue;
+        }
+
+        bool isSearchMath = false;
+        for( size_t mathIndex = 0; mathIndex < sizeOfStatementArray; mathIndex++ ){
+            const char* nameOfMath = arrayWithMathInfo[ mathIndex ].viewOfMathOperationInFile;
+            size_t lenOfMath = strlen( arrayWithMathInfo[ mathIndex ].viewOfMathOperationInFile );
+
+            if( strncmp( *symbol, nameOfMath, lenOfMath ) == 0 ){
+
+                tokens[ tokensIndex ]->nodeValueType = OPERATOR;
+                tokens[ tokensIndex ]->data.mathOperation = arrayWithMathInfo[ mathIndex ].mathOperation;
+                (*symbol) += lenOfMath;
+                ++tokensIndex;
+                isSearchMath = true;
+                break;
+            }
+        }
+        if( isSearchMath ){
+            continue;
+        }
+
+
+        if( '0' <= **symbol && **symbol <= '9' ){
+            double value = 0;
+            do{
+                value = value * 10 + ( **symbol - '0' );
+                ++(*symbol);
+            }while( '0' <= **symbol && **symbol <= '9' );
+
+            tokens[ tokensIndex ]->nodeValueType = NUMBER;
+            tokens[ tokensIndex ]->data.number = value;
+            ++tokensIndex;
+            continue;
+        }
+
+
+        if( islower( **symbol ) || **symbol == '_' ){
+            char* lineWithVar = NULL;
+            size_t lineLen = readingVariable( &lineWithVar, symbol );
+            bool statusOfSearching = changTypeOfNodeOnVariableNode( tokens, symbol, lineWithVar, tokensIndex, lineLen );
+            if( !statusOfSearching ){
+                free( tokens[ tokensIndex ] );
+                tokens[ tokensIndex ] = makeNodeWithNewVariable( lineWithVar, symbol, lineLen, infoForVarArray.freeIndexNow );
+            }
+            ++tokensIndex;
+            continue;
+        }
+
+        if( isspace( **symbol ) ){
+            cleanLineWithCode( symbol );
+            continue;
+        }
+
+        colorPrintf( NOMODE, RED, "\n\nERROR OF LEX ANALYSIS\n\n" );
+        exit( 0 );
+    }
+
+    return tokens;
+}
+
+bool changTypeOfNodeOnVariableNode( node_t** tokens, char** ptrOnSymbolInPosition, char* lineWithVar, size_t tokensIndex, size_t lineLen ){
+    assert( tokens );
+    assert( lineWithVar );
+
+    size_t varIndex = 0;
+    for( varIndex = 0 ;varIndex < infoForVarArray.freeIndexNow; varIndex++ ){
+        if( arrayWithVariables[ varIndex ].nameOfVariable &&
+            strcmp( lineWithVar, arrayWithVariables[ varIndex ].nameOfVariable ) == 0 ){
+            treeElem_t data = {};
+            data.variableIndexInArray = arrayWithVariables[ varIndex ].variableIndexInArray;
+            tokens[ tokensIndex ]->nodeValueType = VARIABLE;
+            tokens[ tokensIndex ]->data = data;
+            *ptrOnSymbolInPosition += lineLen;
+            free( lineWithVar );
+            return true;
+        }
+    }
+    return false;
+}
+
 expertSystemErrors createTreeByRecursiveDescent( tree_t* tree ){
     colorPrintf( NOMODE, YELLOW, "Enter the name of file, where i will find mathematical statement: " );
 
-    char* nameOfFileForMathStatement = NULL;
-    size_t sizeOfAllocationMemory = 0;
-    ssize_t sizeOfLine = getlineWrapper( &nameOfFileForMathStatement, &sizeOfAllocationMemory, stdin );
+    FILE* fileForMathStatement = NULL;
 
-    if( sizeOfLine == -1 ){
-        return ERROR_WITH_GETLINE;
-    }
-
-    FILE* fileForMathStatement = fopen( nameOfFileForMathStatement, "r" );
-    if( fileForMathStatement == NULL ){
-        colorPrintf( NOMODE, RED, "\ncan not open file:%s %s %d\n", __FILE__, __func__, __LINE__ );
-        free( nameOfFileForMathStatement );
-        return ERROR_WITH_FILE;
-    }
-
-    bufferInformation dataBaseFromFile = {};
-    errorCode statusOfReadFromFile = initBufferInformation( &dataBaseFromFile, fileForMathStatement, nameOfFileForMathStatement);
-    if( statusOfReadFromFile != correct ){
-        return ERROR_WITH_FILE;
-    }
-
+    bufferInformation dataBaseFromFile = getBufferFromFile( &fileForMathStatement );
     char* ptrOnSymbolInPosition = dataBaseFromFile.buffer;
-    tree->rootTree = getGeneral( &ptrOnSymbolInPosition );
 
-    free( nameOfFileForMathStatement );
-    fclose( fileForMathStatement );
+    size_t countOfTokens = 0;
+    node_t** tokens = lexAnalysis( &ptrOnSymbolInPosition, &countOfTokens );
+
+    dumpLexArrayInFile( tokens, countOfTokens );
+    destroyLexArray( tokens, countOfTokens );
     destroyBufferInformation( &dataBaseFromFile );
+    /*tree->rootTree = getGeneral( &ptrOnSymbolInPosition );
 
-    colorPrintf( NOMODE, GREEN, "\nSuccessfully reading an expression from a file\n");
+    fclose( fileForMathStatement );
+
+
+    colorPrintf( NOMODE, GREEN, "\nSuccessfully reading an expression from a file\n");*/
     return CORRECT_WORK;
 }
 
@@ -136,7 +287,7 @@ node_t* getGeneral( char** ptrOnSymbolInPosition ){
         node_t* newOperator = getOperator( ptrOnSymbolInPosition );
         nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, nodeOperator, newOperator );
     }while( **ptrOnSymbolInPosition != '$' );
-    
+
     cleanLineWithCode( ptrOnSymbolInPosition );
 
     printf( "char stoped = %c", **ptrOnSymbolInPosition );
@@ -542,4 +693,50 @@ void cleanLineWithCode( char** ptrOnSymbolInPostion ){
     while( **ptrOnSymbolInPostion == '\n' || **ptrOnSymbolInPostion == ' ' ){
         ++(*ptrOnSymbolInPostion);
     }
+}
+
+
+void dumpLexArrayInFile( node_t** tokens, size_t countOfTokens ){
+    colorPrintf( NOMODE, YELLOW, "Enter the name of file, where i will save info about tokens: " );
+
+    char* nameOfFileForTokens = NULL;
+    size_t sizeOfAllocationMemory = 0;
+    ssize_t sizeOfLine = getlineWrapper( &nameOfFileForTokens, &sizeOfAllocationMemory, stdin );
+
+    if( sizeOfLine == -1 ){
+        return ;
+    }
+
+    FILE* fileForTokens = fopen( nameOfFileForTokens, "w" );
+    fprintf( fileForTokens, "array with tokens[ ] = {\n" );
+
+    for( size_t tokenIndex = 0; tokenIndex < countOfTokens; tokenIndex++ ){
+        if( tokens[ tokenIndex ]->nodeValueType == NUMBER ){
+            fprintf( fileForTokens, "\t{ type = NUMBER, val = %lg}\n", tokens[ tokenIndex ]->data.number );
+        }
+        else if( tokens[ tokenIndex ]->nodeValueType == VARIABLE ){
+            fprintf( fileForTokens, "\t{ type = VARIABLE, val = '%s'}\n", getStringOfVariable( tokens[ tokenIndex ] ) );
+        }
+        else if( tokens[ tokenIndex ]->nodeValueType == OPERATOR ){
+            fprintf( fileForTokens, "\t{ type = OPERATOR, val = '%s'}\n", getViewOfMathOperation( tokens[ tokenIndex ]) );
+        }
+        else if( tokens[ tokenIndex ]->nodeValueType == STATEMENT ){
+            fprintf( fileForTokens, "\t{ type = STATEMENT, val = '%s'}\n", getViewOfStatement( tokens[ tokenIndex ] ) );
+        }
+    }
+    fprintf( fileForTokens, "};\ncapacity = %lu\n\n", countOfTokens );
+
+
+    free( nameOfFileForTokens );
+    fclose( fileForTokens );
+}
+
+void destroyLexArray( node_t** tokens, size_t countOfTokens ){
+
+    for( size_t tokenIndex = 0; tokenIndex < countOfTokens; tokenIndex++ ){
+
+        free( tokens[ tokenIndex ] );
+    }
+
+    free( tokens );
 }

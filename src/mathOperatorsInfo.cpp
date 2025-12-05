@@ -30,9 +30,14 @@ informationWithMathOperators arrayWithMathInfo[] = {
 const size_t sizeOfMathArray = sizeof( arrayWithMathInfo ) / sizeof( arrayWithMathInfo[ 0 ] );
 
 informationWithStatements arrayWithStatements[] = {
-        { ASSIGNMENT    ,   "ASSIGNMENT"    ,   "pabgo_govnito"          },
-        { OPERATOR_END  ,   "OP_END"        ,   "gusi"                   },
-        { IF          ,     "IF"            ,   "wool"                   }
+        { NO_TYPE               ,   "NO_TYPE"       ,   "NO_TYPE"                },
+        { ASSIGNMENT            ,   "ASSIGNMENT"    ,   "pabgo_govnito"          },
+        { OPERATOR_END          ,   "OP_END"        ,   "gusi"                   },
+        { IF                    ,     "IF"          ,   "wool"                   },
+        { PAR_OPEN              , "PAR_OPEN"        ,    "("                     },
+        { PAR_CLOSE             , "PAR_CLOSE"       ,    ")"                     },
+        { CURLY_PAR_OPEN        , "CR_PAR_OPEND"    ,    "{"                     },
+        { CURLY_PAR_CLOSE       , "CR_PAR_CLOSE"    ,    "}"                     }
 };
 const size_t sizeOfStatementArray = sizeof( arrayWithStatements ) / sizeof( arrayWithStatements[0] );
 

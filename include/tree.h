@@ -52,9 +52,14 @@ enum typeOfMathOperation {
 };
 
 enum typeOfStatement {
-    ASSIGNMENT         = 0,
-    OPERATOR_END       = 1,
-    IF                 = 2
+    NO_TYPE            = 0,
+    ASSIGNMENT         = 1,
+    OPERATOR_END       = 2,
+    IF                 = 3,
+    PAR_OPEN           = 4,
+    PAR_CLOSE          = 5,
+    CURLY_PAR_OPEN     = 6,
+    CURLY_PAR_CLOSE    = 7
 };
 
 union treeElem_t {

@@ -15,11 +15,12 @@ int main(){
 
     //summaryOfConstants( &tree );
 
-    dumpTree( &tree );
+    /*dumpTree( &tree );
     destroyTree( &tree );
 
     printArrayWithVariablesInFile();
-    destroyArrayWithVariables();
+    destroyArrayWithVariables();*/
+
     return 0;
 }
 

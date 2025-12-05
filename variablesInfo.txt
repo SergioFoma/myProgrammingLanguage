@@ -1,12 +1,14 @@
-array with variables[ 4 ] = {
+array with variables[ 5 ] = {
 	{ x  , 0  },
 	{ tree  , 1  },
 	{ second_if  , 2  },
-	{ a  , 3  },
+	{ var_vefor_and_after  , 3  },
+	{ a  , 4  },
 };
 capacity = 8
 
 var[0] = 0
 var[1] = 7
 var[2] = 143
-var[3] = 7
+var[3] = 101
+var[4] = 7

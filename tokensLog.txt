@@ -1,0 +1,44 @@
+array with tokens[ ] = {
+	{ type = STATEMENT, val = 'wool'}
+	{ type = STATEMENT, val = '('}
+	{ type = VARIABLE, val = 'x'}
+	{ type = STATEMENT, val = ')'}
+	{ type = STATEMENT, val = '{'}
+	{ type = VARIABLE, val = 'tree'}
+	{ type = STATEMENT, val = 'pabgo_govnito'}
+	{ type = NUMBER, val = 7}
+	{ type = STATEMENT, val = 'gusi'}
+	{ type = STATEMENT, val = 'wool'}
+	{ type = STATEMENT, val = '('}
+	{ type = NUMBER, val = 143}
+	{ type = STATEMENT, val = ')'}
+	{ type = VARIABLE, val = 'second_if'}
+	{ type = STATEMENT, val = 'pabgo_govnito'}
+	{ type = NUMBER, val = 143}
+	{ type = STATEMENT, val = 'gusi'}
+	{ type = VARIABLE, val = 'var_vefor_and_after'}
+	{ type = STATEMENT, val = 'pabgo_govnito'}
+	{ type = NUMBER, val = 101}
+	{ type = STATEMENT, val = 'gusi'}
+	{ type = STATEMENT, val = 'wool'}
+	{ type = STATEMENT, val = '('}
+	{ type = OPERATOR, val = 'sin'}
+	{ type = STATEMENT, val = '('}
+	{ type = VARIABLE, val = 'x'}
+	{ type = STATEMENT, val = ')'}
+	{ type = STATEMENT, val = ')'}
+	{ type = STATEMENT, val = '{'}
+	{ type = VARIABLE, val = 'a'}
+	{ type = STATEMENT, val = 'pabgo_govnito'}
+	{ type = NUMBER, val = 7}
+	{ type = STATEMENT, val = 'gusi'}
+	{ type = STATEMENT, val = '}'}
+	{ type = STATEMENT, val = 'gusi'}
+	{ type = STATEMENT, val = '}'}
+	{ type = STATEMENT, val = 'NO_TYPE'}
+	{ type = STATEMENT, val = 'NO_TYPE'}
+	{ type = STATEMENT, val = 'NO_TYPE'}
+	{ type = STATEMENT, val = 'NO_TYPE'}
+};
+capacity = 40
+

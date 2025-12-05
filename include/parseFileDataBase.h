@@ -40,6 +40,8 @@ errorCode initBufferInformation( bufferInformation *bufferFromFile, FILE* myFile
 
 void destroyBufferInformation( bufferInformation *bufferFromFile );
 
+bufferInformation getBufferFromFile( FILE** fileWithBuffer );
+
 expertSystemErrors createTreeFromFile( tree_t* tree );
 
 node_t* createNodeFromFile( char** ptrOnSymbolInPosition );
@@ -48,7 +50,15 @@ char* readNodeNameFromFile( char** ptrOnSymbolInPosition );
 
 expertSystemErrors buildnewMathNode( node_t** node, char* nodeName );
 
+node_t** initializationTokens( size_t* countOfNodes );
+
+void initializationNodeInArray( node_t** tokens, size_t startIndex, size_t* countOfTokens );
+
+bool changTypeOfNodeOnVariableNode( node_t** tokens, char** ptrOnSymbolInPosition, char* lineWithVar, size_t tokensIndex, size_t lineLen );
+
 expertSystemErrors createTreeByRecursiveDescent( tree_t* tree );
+
+node_t** lexAnalysis( char** mathExpression, size_t* countOfTokens );
 
 node_t* getGeneral( char** ptrOnSymbolInPosition );
 
@@ -87,6 +97,10 @@ bool checkingOnStatement( char* lineWithWord );
 node_t* getNumber( char** ptrOnSymbolInPosition );
 
 void cleanLineWithCode( char** ptrOnSymbolInPosition );
+
+void dumpLexArrayInFile( node_t** tokens, size_t countOfTokens );
+
+void destroyLexArray( node_t** tokens, size_t countOfTokens );
 
 #endif
 

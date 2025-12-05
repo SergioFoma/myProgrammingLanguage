@@ -386,6 +386,7 @@ void printArrayWithVariablesInFile(){
     }
 
     free( nameOfFileForVar );
+    fclose( fileForVar );
 }
 
 double doAdd( double firstNumber, double secondNumber ){
