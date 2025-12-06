@@ -7,12 +7,6 @@
 
 #include "tree.h"
 
-struct bufferInformation{
-    char* buffer;
-    size_t fileSize;
-    size_t bufferSize;
-};
-
 enum errorCode {
     correct        = 0,
     fileOpenErr    = 1,
@@ -30,6 +24,19 @@ enum expertSystemErrors {
     NULL_PTR_IN_FUNC        = 7,
     ERROR_WITH_FILE         = 8,
     ROOT_NULL_PTR           = 9
+};
+
+struct bufferInformation{
+    char* buffer;
+    size_t fileSize;
+    size_t bufferSize;
+};
+
+struct infoForCreateTree {
+    node_t** tokens;
+    size_t countOfTokens;
+    size_t currentIndex;
+    size_t freeIndexNow;
 };
 
 expertSystemErrors writeInformationInFile( tree_t* tree );
@@ -50,37 +57,37 @@ char* readNodeNameFromFile( char** ptrOnSymbolInPosition );
 
 expertSystemErrors buildnewMathNode( node_t** node, char* nodeName );
 
-node_t** initializationTokens( size_t* countOfNodes );
+void initializationTokens( infoForCreateTree* infoForTree );
 
-void initializationNodeInArray( node_t** tokens, size_t startIndex, size_t* countOfTokens );
+void initializationNodeInArray( infoForCreateTree* infoForTree, size_t startIndex );
 
-bool changTypeOfNodeOnVariableNode( node_t** tokens, char** ptrOnSymbolInPosition, char* lineWithVar, size_t tokensIndex, size_t lineLen );
+bool changTypeOfNodeOnVariableNode( infoForCreateTree* infoForTree, char** ptrOnSymbolInPosition, char* lineWithVar, size_t lineLen );
 
 expertSystemErrors createTreeByRecursiveDescent( tree_t* tree );
 
-node_t** lexAnalysis( char** mathExpression, size_t* countOfTokens );
+void lexAnalysis( char** mathExpression, infoForCreateTree* infoForTree );
 
-node_t* getGeneral( char** ptrOnSymbolInPosition );
+node_t* getGeneral( infoForCreateTree* infoForTree );
 
-node_t* getOperator( char** ptrOnSymbolInPosition );
+node_t* getOperator( infoForCreateTree* infoForTree );
 
-node_t* getAssignment( char** ptrOnSymbolInPosition );
+node_t* getAssignment( infoForCreateTree* infoForTree );
 
-node_t* getCondition( char** ptrOnSymbolInPosition );
+node_t* getCondition( infoForCreateTree* infoForTree );
 
 const char* getEndOfAssignment();
 
-node_t* getExpression( char** ptrOnSymbolInPosition );
+node_t* getExpression( infoForCreateTree* infoForTree );
 
-node_t* getTerm( char** ptrOnSymbolInPosition );
+node_t* getTerm( infoForCreateTree* infoForTree );
 
-node_t* getPow( char** ptrOnSymbolInPosition );
+node_t* getPow( infoForCreateTree* infoForTree );
 
-node_t* getFunctionWithOneArgument( char** ptrOnSymbolInPosition );
+node_t* getFunctionWithOneArgument( infoForCreateTree* infoForTree );
 
-node_t* getPrimaryExpression( char** ptrOnSymbolInPosition );
+node_t* getPrimaryExpression( infoForCreateTree* infoForTree );
 
-node_t* getVariable( char** ptrOnSymbolInPosition );
+node_t* getVariable( infoForCreateTree* infoForTree );
 
 node_t* makeNodeWithNewVariable( char* lineWithVar, char** ptrOnSymbolInPosition, size_t lineLen, size_t varIndex );
 
@@ -90,17 +97,17 @@ size_t readingVariable( char** lineWithVariable, char** ptrOnSymbolInPosition );
 
 void isEnoughSize( char** lineWithWord, size_t* lineIndex, size_t* sizeOfLine );
 
-bool checkingOnFunction( char* lineWithWord );
+bool checkingOnFunction( infoForCreateTree* infoForTree );
 
-bool checkingOnStatement( char* lineWithWord );
+bool checkingOnStatement( infoForCreateTree* infoForTree );
 
-node_t* getNumber( char** ptrOnSymbolInPosition );
+node_t* getNumber( infoForCreateTree* infoForTree );
 
 void cleanLineWithCode( char** ptrOnSymbolInPosition );
 
-void dumpLexArrayInFile( node_t** tokens, size_t countOfTokens );
+void dumpLexArrayInFile( infoForCreateTree* infoForTree );
 
-void destroyLexArray( node_t** tokens, size_t countOfTokens );
+void destroyLexArray( infoForCreateTree* infoForTree );
 
 #endif
 

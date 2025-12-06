@@ -34,7 +34,9 @@ const double epsilon = 1e-5;
 
 
 node_t* copyNode( node_t* node ){
-    assert( node );
+    if( node == NULL ){
+        return NULL;
+    }
 
     node_t* newMathNode = NULL;
     initNode( &newMathNode, node->nodeValueType, node->data );

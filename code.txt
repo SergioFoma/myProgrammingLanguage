@@ -1,8 +1,10 @@
 wool( x ){
     tree pabgo_govnito 7 gusi
     wool( 143 ) second_if pabgo_govnito 143 gusi
-    var_vefor_and_after pabgo_govnito 101 gusi
+    var_befor_and_after pabgo_govnito 101 gusi
     wool( sin( x ) ){
         a pabgo_govnito 7 gusi
-    } gusi
+    }
+
+    new_var_for_tokens pabgo_govnito 47 gusi
 }

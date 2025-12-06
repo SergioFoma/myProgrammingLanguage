@@ -122,39 +122,34 @@ bufferInformation getBufferFromFile( FILE** fileWithBuffer ){
     return dataBaseFromFile;
 }
 
-node_t** initializationTokens( size_t* countOfNodes ){
-    *countOfNodes = startSizeForTokens;
-    node_t** tokens = ( node_t** )calloc( *countOfNodes, sizeof( node_t* ) );
+void initializationTokens( infoForCreateTree* infoForTree ){
+    infoForTree->countOfTokens = startSizeForTokens;
+    infoForTree->tokens= ( node_t** )calloc( infoForTree->countOfTokens, sizeof( node_t* ) );
     size_t startIndex = 0;
-    initializationNodeInArray( tokens, startIndex, countOfNodes );
+    initializationNodeInArray( infoForTree, startIndex );
 
-    return tokens;
 }
 
-void initializationNodeInArray( node_t** tokens, size_t startIndex, size_t* countOfTokens ){
-    assert( tokens );
-    assert( countOfTokens );
+void initializationNodeInArray( infoForCreateTree* infoForTree, size_t startIndex ){
+    assert( infoForTree );
 
     treeElem_t data = {};
     data.statement = NO_TYPE;
-    for( ; startIndex < (*countOfTokens); startIndex++ ){
-        initNode( tokens + startIndex, STATEMENT, data );
+    for( ; startIndex < infoForTree->countOfTokens; startIndex++ ){
+        initNode( infoForTree->tokens + startIndex, STATEMENT, data );
     }
 }
 
-node_t** lexAnalysis( char** symbol, size_t* countOfTokens ){
+void lexAnalysis( char** symbol, infoForCreateTree* infoForTree ){
     assert( symbol );
     assert( *symbol );
-    assert( countOfTokens );
-
-    size_t tokensIndex = 0;
-    node_t** tokens = initializationTokens( countOfTokens );
+    assert( infoForTree );
 
     while( **symbol != '\0' ){
-        if( tokensIndex == ( *countOfTokens - 1) ){
-            *countOfTokens *= 2;
-            tokens = ( node_t** )realloc( tokens, sizeof( node_t* ) * (*countOfTokens) );
-            initializationNodeInArray( tokens, tokensIndex + 1, countOfTokens );
+        if( infoForTree->freeIndexNow == ( infoForTree->countOfTokens - 1) ){
+            infoForTree->countOfTokens *= 2;
+            infoForTree->tokens = ( node_t** )realloc( infoForTree->tokens, sizeof( node_t* ) * infoForTree->countOfTokens );
+            initializationNodeInArray( infoForTree, infoForTree->freeIndexNow + 1 );
         }
 
         bool isSearchStatement = false;
@@ -164,10 +159,10 @@ node_t** lexAnalysis( char** symbol, size_t* countOfTokens ){
 
             if( strncmp( *symbol, nameOfStatement, lenOfStatement ) == 0 ){
 
-                tokens[ tokensIndex ]->nodeValueType = STATEMENT;
-                tokens[ tokensIndex ]->data.statement = arrayWithStatements[ statementIndex ].statement;
+                (infoForTree->tokens)[ infoForTree->freeIndexNow ]->nodeValueType = STATEMENT;
+                (infoForTree->tokens)[ infoForTree->freeIndexNow ]->data.statement = arrayWithStatements[ statementIndex ].statement;
                 (*symbol) += lenOfStatement;
-                ++tokensIndex;
+                ++( infoForTree->freeIndexNow );
                 isSearchStatement = true;
                 break;
             }
@@ -183,10 +178,10 @@ node_t** lexAnalysis( char** symbol, size_t* countOfTokens ){
 
             if( strncmp( *symbol, nameOfMath, lenOfMath ) == 0 ){
 
-                tokens[ tokensIndex ]->nodeValueType = OPERATOR;
-                tokens[ tokensIndex ]->data.mathOperation = arrayWithMathInfo[ mathIndex ].mathOperation;
+                (infoForTree->tokens)[ infoForTree->freeIndexNow ]->nodeValueType = OPERATOR;
+                (infoForTree->tokens)[ infoForTree->freeIndexNow ]->data.mathOperation = arrayWithMathInfo[ mathIndex ].mathOperation;
                 (*symbol) += lenOfMath;
-                ++tokensIndex;
+                ++( infoForTree->freeIndexNow );
                 isSearchMath = true;
                 break;
             }
@@ -203,9 +198,9 @@ node_t** lexAnalysis( char** symbol, size_t* countOfTokens ){
                 ++(*symbol);
             }while( '0' <= **symbol && **symbol <= '9' );
 
-            tokens[ tokensIndex ]->nodeValueType = NUMBER;
-            tokens[ tokensIndex ]->data.number = value;
-            ++tokensIndex;
+            (infoForTree->tokens)[ infoForTree->freeIndexNow ]->nodeValueType = NUMBER;
+            (infoForTree->tokens)[ infoForTree->freeIndexNow ]->data.number = value;
+            ++( infoForTree->freeIndexNow );
             continue;
         }
 
@@ -213,12 +208,12 @@ node_t** lexAnalysis( char** symbol, size_t* countOfTokens ){
         if( islower( **symbol ) || **symbol == '_' ){
             char* lineWithVar = NULL;
             size_t lineLen = readingVariable( &lineWithVar, symbol );
-            bool statusOfSearching = changTypeOfNodeOnVariableNode( tokens, symbol, lineWithVar, tokensIndex, lineLen );
+            bool statusOfSearching = changTypeOfNodeOnVariableNode( infoForTree, symbol, lineWithVar, lineLen );
             if( !statusOfSearching ){
-                free( tokens[ tokensIndex ] );
-                tokens[ tokensIndex ] = makeNodeWithNewVariable( lineWithVar, symbol, lineLen, infoForVarArray.freeIndexNow );
+                free( ( infoForTree->tokens )[ infoForTree->freeIndexNow ] );
+                ( infoForTree->tokens )[ infoForTree->freeIndexNow ] = makeNodeWithNewVariable( lineWithVar, symbol, lineLen, infoForVarArray.freeIndexNow );
             }
-            ++tokensIndex;
+            ++( infoForTree->freeIndexNow );
             continue;
         }
 
@@ -230,12 +225,10 @@ node_t** lexAnalysis( char** symbol, size_t* countOfTokens ){
         colorPrintf( NOMODE, RED, "\n\nERROR OF LEX ANALYSIS\n\n" );
         exit( 0 );
     }
-
-    return tokens;
 }
 
-bool changTypeOfNodeOnVariableNode( node_t** tokens, char** ptrOnSymbolInPosition, char* lineWithVar, size_t tokensIndex, size_t lineLen ){
-    assert( tokens );
+bool changTypeOfNodeOnVariableNode( infoForCreateTree* infoForTree, char** ptrOnSymbolInPosition, char* lineWithVar, size_t lineLen ){
+    assert( infoForTree );
     assert( lineWithVar );
 
     size_t varIndex = 0;
@@ -244,8 +237,8 @@ bool changTypeOfNodeOnVariableNode( node_t** tokens, char** ptrOnSymbolInPositio
             strcmp( lineWithVar, arrayWithVariables[ varIndex ].nameOfVariable ) == 0 ){
             treeElem_t data = {};
             data.variableIndexInArray = arrayWithVariables[ varIndex ].variableIndexInArray;
-            tokens[ tokensIndex ]->nodeValueType = VARIABLE;
-            tokens[ tokensIndex ]->data = data;
+            ( infoForTree->tokens )[ infoForTree->freeIndexNow ]->nodeValueType = VARIABLE;
+            ( infoForTree->tokens )[ infoForTree->freeIndexNow ]->data = data;
             *ptrOnSymbolInPosition += lineLen;
             free( lineWithVar );
             return true;
@@ -262,144 +255,123 @@ expertSystemErrors createTreeByRecursiveDescent( tree_t* tree ){
     bufferInformation dataBaseFromFile = getBufferFromFile( &fileForMathStatement );
     char* ptrOnSymbolInPosition = dataBaseFromFile.buffer;
 
-    size_t countOfTokens = 0;
-    node_t** tokens = lexAnalysis( &ptrOnSymbolInPosition, &countOfTokens );
+    infoForCreateTree infoForTree = {};
+    initializationTokens( &infoForTree );
 
-    dumpLexArrayInFile( tokens, countOfTokens );
-    destroyLexArray( tokens, countOfTokens );
+    lexAnalysis( &ptrOnSymbolInPosition, &infoForTree );
+    infoForTree.currentIndex = 0;                               // start position - zero index
+    dumpLexArrayInFile( &infoForTree );
+
+    printf( "\n freeIndex = %lu\n, currentIndex = %lu\n", infoForTree.freeIndexNow, infoForTree.currentIndex  );
+    tree->rootTree = getGeneral( &infoForTree );
+    colorPrintf( NOMODE, GREEN, "\nSuccessfully reading an expression from a file\n");
+
+    destroyLexArray( &infoForTree );
     destroyBufferInformation( &dataBaseFromFile );
-    /*tree->rootTree = getGeneral( &ptrOnSymbolInPosition );
-
     fclose( fileForMathStatement );
-
-
-    colorPrintf( NOMODE, GREEN, "\nSuccessfully reading an expression from a file\n");*/
     return CORRECT_WORK;
 }
 
-node_t* getGeneral( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getGeneral( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
     node_t* nodeOperator = NULL;
     do{
-        node_t* newOperator = getOperator( ptrOnSymbolInPosition );
+        node_t* newOperator = getOperator( infoForTree );
         nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, nodeOperator, newOperator );
-    }while( **ptrOnSymbolInPosition != '$' );
+        printf( "token if gen = %lu\nsize of array = %lu\n", infoForTree->currentIndex, infoForTree->countOfTokens );
+    }while( infoForTree->currentIndex < ( infoForTree->freeIndexNow - 1 ) );
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
-
-    printf( "char stoped = %c", **ptrOnSymbolInPosition );
+    printf( "token stoped = %lu\nsize of array = %lu", infoForTree->currentIndex, infoForTree->countOfTokens );
     return nodeOperator;
 }
 
-node_t* getOperator( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getOperator( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
     node_t* nodeOperator = NULL;
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
-    if( nodeOperator = getAssignment( ptrOnSymbolInPosition )  ){
-        cleanLineWithCode( ptrOnSymbolInPosition );
-    }
-    else if( nodeOperator = getCondition( ptrOnSymbolInPosition ) ){
-        cleanLineWithCode( ptrOnSymbolInPosition );
-    }
+    if( nodeOperator = getAssignment( infoForTree )  ){}
+    else if( nodeOperator = getCondition( infoForTree ) ){}
     else{
-        cleanLineWithCode( ptrOnSymbolInPosition );
-        if( **ptrOnSymbolInPosition == '{' ){
-            ++(*ptrOnSymbolInPosition );
+        if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_OPEN ){
+            ++( infoForTree->currentIndex );
         }
 
         do{
-            node_t* newOperator = getOperator( ptrOnSymbolInPosition );
+            node_t* newOperator = getOperator( infoForTree );
             nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, nodeOperator, newOperator );
-        }while( **ptrOnSymbolInPosition != '}' );
+        }while( !( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+                   ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_CLOSE ) );
 
-        if( **ptrOnSymbolInPosition == '}' ){
-            ++(*ptrOnSymbolInPosition );
+        if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_CLOSE ){
+            ++( infoForTree->currentIndex );
         }
     }
 
-    char* lineWithOpEnd = NULL;
-    size_t lineLen = readingWord( &lineWithOpEnd, ptrOnSymbolInPosition );
-
-    const char* endOfAssignment = getEndOfAssignment();
-
-    if( strcmp( lineWithOpEnd, endOfAssignment ) == 0 ){
-        *ptrOnSymbolInPosition += lineLen;
-        cleanLineWithCode( ptrOnSymbolInPosition );
+    if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+        ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == OPERATOR_END ){
+        ++( infoForTree->currentIndex );
     }
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
-    free( lineWithOpEnd );
     return nodeOperator;
 }
 
-node_t* getCondition( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
-
-    char* lineForIf = NULL;
-    size_t lineLen = readingWord( &lineForIf, ptrOnSymbolInPosition );
+node_t* getCondition( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
     for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
         if( arrayWithStatements[ statementIndex ].statement == IF &&
-            strcmp( lineForIf, arrayWithStatements[ statementIndex ].viewOfStatementInFile ) == 0 ){
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == IF ){
 
-            *ptrOnSymbolInPosition += lineLen;
-            if( **ptrOnSymbolInPosition == '(' ){
-                ++(*ptrOnSymbolInPosition);
+            ++( infoForTree->currentIndex );
+            if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+                ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_OPEN ){
+                ++( infoForTree->currentIndex );
             }
-            node_t* left = getExpression( ptrOnSymbolInPosition );
-            if( **ptrOnSymbolInPosition == ')' ){
-                ++(*ptrOnSymbolInPosition);
+            node_t* left = getExpression( infoForTree );
+            if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+                ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_CLOSE ){
+                ++( infoForTree->currentIndex );
             }
-            node_t* right = getOperator( ptrOnSymbolInPosition );
+            node_t* right = getOperator( infoForTree );
 
-            free( lineForIf);
             return newStatementNode( STATEMENT, IF, left, right );
           }
     }
 
-    free( lineForIf );
-    cleanLineWithCode( ptrOnSymbolInPosition );
     return NULL;
 }
 
-node_t* getAssignment( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getAssignment( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
     node_t* left = NULL;
-    if( islower( **ptrOnSymbolInPosition) || **ptrOnSymbolInPosition == '_' ){
-        left = getVariable( ptrOnSymbolInPosition );
+    if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == VARIABLE ){
+        left = getVariable( infoForTree );
     }
     else{
         return NULL;
     }
 
-    char* lineForAss = NULL;
-    size_t lineLen = readingWord( &lineForAss, ptrOnSymbolInPosition );
-
     for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
         if( arrayWithStatements[ statementIndex ].statement == ASSIGNMENT &&
-            strcmp( lineForAss, arrayWithStatements[ statementIndex ].viewOfStatementInFile ) == 0 ){
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == ASSIGNMENT ){
 
-            (*ptrOnSymbolInPosition) += lineLen;
-            node_t* right = getExpression( ptrOnSymbolInPosition );
-            cleanLineWithCode( ptrOnSymbolInPosition );
-            free( lineForAss );
+            ++( infoForTree->currentIndex );
+            node_t* right = getExpression( infoForTree );
             arrayWithVariableValue[ left->data.variableIndexInArray ] = calculateValue( right );
             return newStatementNode( STATEMENT, ASSIGNMENT, left, right );
         }
     }
-
-    cleanLineWithCode( ptrOnSymbolInPosition );
-    free( lineForAss );
     return NULL;
 }
 
@@ -413,20 +385,22 @@ const char* getEndOfAssignment(){
     return NULL;
 }
 
-node_t* getExpression( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getExpression( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
-    node_t* left = getTerm( ptrOnSymbolInPosition );
+    node_t* left = getTerm( infoForTree );
 
-    while( **ptrOnSymbolInPosition == '+' || **ptrOnSymbolInPosition == '-' ){
-        char operation = **ptrOnSymbolInPosition;
-        ++(*ptrOnSymbolInPosition);
+    while( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == OPERATOR &&
+           ( ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation == ADD ||
+             ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation == SUB ) ){
 
-        node_t* right = getTerm( ptrOnSymbolInPosition );
+        typeOfMathOperation currentMathOp = ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation;
+        ++( infoForTree->currentIndex );
 
-        if( operation == '+' ){
+        node_t* right = getTerm( infoForTree );
+
+        if( currentMathOp == ADD ){
             left = newMathNode( OPERATOR, ADD, left, right );
         }
         else{
@@ -434,129 +408,107 @@ node_t* getExpression( char** ptrOnSymbolInPosition ){
         }
     }
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
     return left;
 }
 
-node_t* getTerm( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getTerm( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
-    node_t* left = getPrimaryExpression( ptrOnSymbolInPosition );
+    node_t* left = getPrimaryExpression( infoForTree );
 
 
-    while( **ptrOnSymbolInPosition == '*' || **ptrOnSymbolInPosition == '/' ){
-        char operation = **ptrOnSymbolInPosition;
-        ++(*ptrOnSymbolInPosition);
+    while( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == OPERATOR &&
+           ( ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation == MUL ||
+             ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation == DIV ) ){
 
-        cleanLineWithCode( ptrOnSymbolInPosition );
-        node_t* right = getPrimaryExpression( ptrOnSymbolInPosition );
+        typeOfMathOperation currentMathOp = ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation;
+        ++( infoForTree->currentIndex );
 
-        if( operation == '*' ){
+        node_t* right = getPrimaryExpression( infoForTree );
+
+        if( currentMathOp == MUL ){
             left = newMathNode( OPERATOR, MUL, left, right );
         }
-        else if( operation == '/' ){
+        else if( currentMathOp == DIV ){
             left = newMathNode( OPERATOR, DIV, left, right );
         }
     }
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
     return left;
 }
 
-node_t* getPrimaryExpression( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getPrimaryExpression( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
+    if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+        ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_OPEN ){
+        ++( infoForTree->currentIndex );
 
-    if( **ptrOnSymbolInPosition == '(' ){
-        ++(*ptrOnSymbolInPosition);
+        node_t* nodeFromExpression = getExpression( infoForTree );
 
-        node_t* nodeFromExpression = getExpression( ptrOnSymbolInPosition );
-
-        if( **ptrOnSymbolInPosition == ')' ){
-            ++(*ptrOnSymbolInPosition);
+        if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_CLOSE ){
+            ++( infoForTree->currentIndex );
         }
         return nodeFromExpression;
     }
 
-    if( islower( **ptrOnSymbolInPosition) ){
-        return getVariable( ptrOnSymbolInPosition );
+    if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType != NUMBER ){
+        return getVariable( infoForTree );
     }
     else{
-        return getNumber( ptrOnSymbolInPosition );
+        return getNumber( infoForTree );
     }
 
 }
 
-node_t* getFunctionWithOneArgument( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
-
-    char* lineForFunc = NULL;
-    size_t lineLen = readingWord( &lineForFunc, ptrOnSymbolInPosition );
+node_t* getFunctionWithOneArgument( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
     for( size_t indexOfMathFunc = 0; indexOfMathFunc < sizeOfMathArray; indexOfMathFunc++ ){
         if( arrayWithMathInfo[ indexOfMathFunc ].functionClass == ONE_ARG &&
-            strcmp( lineForFunc, arrayWithMathInfo[ indexOfMathFunc ].viewOfMathOperationInFile ) == 0 ){
-            *ptrOnSymbolInPosition += lineLen;
-            if( **ptrOnSymbolInPosition == '(' ){
-                ++(*ptrOnSymbolInPosition);
-            }
-            node_t* funcNode = getExpression( ptrOnSymbolInPosition );
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == OPERATOR &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation == arrayWithMathInfo[ indexOfMathFunc ].mathOperation ){
 
-            if( **ptrOnSymbolInPosition == ')' ){
-                ++(*ptrOnSymbolInPosition);
+            ++( infoForTree->currentIndex );
+            if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+                ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_OPEN ){
+                ++( infoForTree->currentIndex );
             }
-            free( lineForFunc );
-            cleanLineWithCode( ptrOnSymbolInPosition );
+            node_t* funcNode = getExpression( infoForTree );
+
+            if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+                ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_CLOSE ){
+                ++( infoForTree->currentIndex );
+            }
             return newMathNode( OPERATOR, arrayWithMathInfo[ indexOfMathFunc ].mathOperation, NULL, funcNode );
         }
     }
 
-    cleanLineWithCode( ptrOnSymbolInPosition );
-    free( lineForFunc );
     return NULL;
 }
 
 
-node_t* getVariable( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getVariable( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
-    char* lineWithVar = NULL;
-    size_t lineLen = readingVariable( &lineWithVar, ptrOnSymbolInPosition );
-
-    bool isFunction = checkingOnFunction( lineWithVar );
+    bool isFunction = checkingOnFunction( infoForTree );
     if( isFunction ){
-        free( lineWithVar );
-        return getFunctionWithOneArgument( ptrOnSymbolInPosition );
+        return getFunctionWithOneArgument( infoForTree );
     }
 
-    bool isStatement = checkingOnStatement( lineWithVar );
+    bool isStatement = checkingOnStatement( infoForTree );
     if( isStatement ){
-        free( lineWithVar );
         return NULL;
     }
 
-    size_t varIndex = 0;
-    for( varIndex = 0 ;varIndex < infoForVarArray.freeIndexNow; varIndex++ ){
-        if( arrayWithVariables[ varIndex ].nameOfVariable &&
-            strcmp( lineWithVar, arrayWithVariables[ varIndex ].nameOfVariable ) == 0 ){
-            treeElem_t data = {};
-            data.variableIndexInArray = arrayWithVariables[ varIndex ].variableIndexInArray;
-            node_t* nodeWithVar = NULL;
-            initNode( &nodeWithVar, VARIABLE, data );
-            *ptrOnSymbolInPosition += lineLen;
-            cleanLineWithCode( ptrOnSymbolInPosition );
-            free( lineWithVar );
-            return nodeWithVar;
-        }
-    }
-
-    return makeNodeWithNewVariable( lineWithVar, ptrOnSymbolInPosition,  lineLen, varIndex);
+    size_t treeIndex = ( infoForTree->currentIndex );
+    ++( infoForTree->currentIndex );
+    return copyNode( ( infoForTree->tokens )[ treeIndex ] );
 }
 
 node_t* makeNodeWithNewVariable( char* lineWithVar, char** ptrOnSymbolInPosition, size_t lineLen, size_t varIndex ){
@@ -639,12 +591,13 @@ void isEnoughSize( char** lineWithWord, size_t* lineIndex, size_t* sizeOfLine ){
     }
 };
 
-bool checkingOnFunction( char* lineWithWord ){
-    assert( lineWithWord );
+bool checkingOnFunction( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
 
     for( size_t indexOfMathFunc = 0; indexOfMathFunc < sizeOfMathArray; indexOfMathFunc++ ){
         if( arrayWithMathInfo[ indexOfMathFunc ].functionClass == ONE_ARG &&
-            strcmp( lineWithWord, arrayWithMathInfo[ indexOfMathFunc ].viewOfMathOperationInFile ) == 0 ){
+        ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == OPERATOR &&
+        ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation == arrayWithMathInfo[ indexOfMathFunc ].mathOperation ){
             return true;
         }
     }
@@ -652,41 +605,33 @@ bool checkingOnFunction( char* lineWithWord ){
     return false;
 }
 
-bool checkingOnStatement( char* lineWithWord ){
-    assert( lineWithWord );
+bool checkingOnStatement( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
 
     for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
-        if( strcmp( lineWithWord, arrayWithStatements[ statementIndex ].viewOfStatementInFile ) == 0 ){
-            return true;
-        }
+        if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == arrayWithStatements[ statementIndex ].statement ){
+
+                return true;
+            }
     }
 
     return false;
 }
 
-node_t* getNumber( char** ptrOnSymbolInPosition ){
-    assert( ptrOnSymbolInPosition );
-    assert( *ptrOnSymbolInPosition );
+node_t* getNumber( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
 
-    double value = 0;
-    bool statusOfReadNumber = false;
-    cleanLineWithCode( ptrOnSymbolInPosition );
-
-    while( '0' <= (**ptrOnSymbolInPosition) &&
-                  (**ptrOnSymbolInPosition) <= '9' ){
-
-        value = value * 10 + ( (**ptrOnSymbolInPosition) - '0' );
-        ++(*ptrOnSymbolInPosition);
-        statusOfReadNumber = true;
+    if( (infoForTree->tokens)[ infoForTree->currentIndex ]->nodeValueType == NUMBER ){
+        size_t treeIndex = infoForTree->currentIndex;
+        ++( infoForTree->currentIndex );
+        return copyNode( (infoForTree->tokens)[ treeIndex ] );
     }
 
-    /*if( statusOfReadNumber    == false ){
-        colorPrintf( NOMODE, RED, "\nError of getNumber:%s %s %d\n", __FILE__, __func__, __LINE__ );
-        exit( 0 );
-    }*/
-
-    cleanLineWithCode( ptrOnSymbolInPosition );
-    return makeConstNode( value );
+    colorPrintf( NOMODE, RED, "ERROR:%s %s %d\n typeOfNode = %d, current index = %lu\n", __FILE__, __func__, __LINE__,
+                (infoForTree->tokens)[ infoForTree->currentIndex ]->nodeValueType, infoForTree->currentIndex );
+    return NULL;
 }
 
 void cleanLineWithCode( char** ptrOnSymbolInPostion ){
@@ -696,7 +641,9 @@ void cleanLineWithCode( char** ptrOnSymbolInPostion ){
 }
 
 
-void dumpLexArrayInFile( node_t** tokens, size_t countOfTokens ){
+void dumpLexArrayInFile( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+
     colorPrintf( NOMODE, YELLOW, "Enter the name of file, where i will save info about tokens: " );
 
     char* nameOfFileForTokens = NULL;
@@ -708,35 +655,40 @@ void dumpLexArrayInFile( node_t** tokens, size_t countOfTokens ){
     }
 
     FILE* fileForTokens = fopen( nameOfFileForTokens, "w" );
-    fprintf( fileForTokens, "array with tokens[ ] = {\n" );
+    fprintf( fileForTokens, "array with tokens[ %lu ] = {\n", infoForTree->freeIndexNow );
 
-    for( size_t tokenIndex = 0; tokenIndex < countOfTokens; tokenIndex++ ){
-        if( tokens[ tokenIndex ]->nodeValueType == NUMBER ){
-            fprintf( fileForTokens, "\t{ type = NUMBER, val = %lg}\n", tokens[ tokenIndex ]->data.number );
+    for( size_t tokenIndex = 0; tokenIndex < infoForTree->countOfTokens; tokenIndex++ ){
+        if( ( infoForTree->tokens )[ tokenIndex ] == NULL ){
+            continue;
         }
-        else if( tokens[ tokenIndex ]->nodeValueType == VARIABLE ){
-            fprintf( fileForTokens, "\t{ type = VARIABLE, val = '%s'}\n", getStringOfVariable( tokens[ tokenIndex ] ) );
+
+        if( ( infoForTree->tokens )[ tokenIndex ]->nodeValueType == NUMBER ){
+            fprintf( fileForTokens, "\t[%lu] = { type = NUMBER, val = %lg}\n", tokenIndex, ( infoForTree->tokens )[ tokenIndex ]->data.number );
         }
-        else if( tokens[ tokenIndex ]->nodeValueType == OPERATOR ){
-            fprintf( fileForTokens, "\t{ type = OPERATOR, val = '%s'}\n", getViewOfMathOperation( tokens[ tokenIndex ]) );
+        else if( ( infoForTree->tokens )[ tokenIndex ]->nodeValueType == VARIABLE ){
+            fprintf( fileForTokens, "\t[%lu] = { type = VARIABLE, val = '%s'}\n", tokenIndex, getStringOfVariable( ( infoForTree->tokens )[ tokenIndex] ) );
         }
-        else if( tokens[ tokenIndex ]->nodeValueType == STATEMENT ){
-            fprintf( fileForTokens, "\t{ type = STATEMENT, val = '%s'}\n", getViewOfStatement( tokens[ tokenIndex ] ) );
+        else if( ( infoForTree->tokens )[ tokenIndex ]->nodeValueType == OPERATOR ){
+            fprintf( fileForTokens, "\t[%lu] ={ type = OPERATOR, val = '%s'}\n", tokenIndex, getViewOfMathOperation( ( infoForTree->tokens )[ tokenIndex ] ) );
+        }
+        else if( ( infoForTree->tokens )[ tokenIndex ]->nodeValueType == STATEMENT ){
+            fprintf( fileForTokens, "\t[%lu] = { type = STATEMENT, val = '%s'}\n", tokenIndex, getViewOfStatement( ( infoForTree->tokens )[ tokenIndex ] ) );
         }
     }
-    fprintf( fileForTokens, "};\ncapacity = %lu\n\n", countOfTokens );
+    fprintf( fileForTokens, "};\ncapacity = %lu\n\n", infoForTree->countOfTokens );
 
 
     free( nameOfFileForTokens );
     fclose( fileForTokens );
 }
 
-void destroyLexArray( node_t** tokens, size_t countOfTokens ){
+void destroyLexArray( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
 
-    for( size_t tokenIndex = 0; tokenIndex < countOfTokens; tokenIndex++ ){
+    for( size_t tokenIndex = 0; tokenIndex < infoForTree->countOfTokens; tokenIndex++ ){
 
-        free( tokens[ tokenIndex ] );
+        free( ( infoForTree->tokens )[tokenIndex ] );
     }
 
-    free( tokens );
+    free( infoForTree->tokens );
 }

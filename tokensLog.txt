@@ -1,44 +1,84 @@
-array with tokens[ ] = {
-	{ type = STATEMENT, val = 'wool'}
-	{ type = STATEMENT, val = '('}
-	{ type = VARIABLE, val = 'x'}
-	{ type = STATEMENT, val = ')'}
-	{ type = STATEMENT, val = '{'}
-	{ type = VARIABLE, val = 'tree'}
-	{ type = STATEMENT, val = 'pabgo_govnito'}
-	{ type = NUMBER, val = 7}
-	{ type = STATEMENT, val = 'gusi'}
-	{ type = STATEMENT, val = 'wool'}
-	{ type = STATEMENT, val = '('}
-	{ type = NUMBER, val = 143}
-	{ type = STATEMENT, val = ')'}
-	{ type = VARIABLE, val = 'second_if'}
-	{ type = STATEMENT, val = 'pabgo_govnito'}
-	{ type = NUMBER, val = 143}
-	{ type = STATEMENT, val = 'gusi'}
-	{ type = VARIABLE, val = 'var_vefor_and_after'}
-	{ type = STATEMENT, val = 'pabgo_govnito'}
-	{ type = NUMBER, val = 101}
-	{ type = STATEMENT, val = 'gusi'}
-	{ type = STATEMENT, val = 'wool'}
-	{ type = STATEMENT, val = '('}
-	{ type = OPERATOR, val = 'sin'}
-	{ type = STATEMENT, val = '('}
-	{ type = VARIABLE, val = 'x'}
-	{ type = STATEMENT, val = ')'}
-	{ type = STATEMENT, val = ')'}
-	{ type = STATEMENT, val = '{'}
-	{ type = VARIABLE, val = 'a'}
-	{ type = STATEMENT, val = 'pabgo_govnito'}
-	{ type = NUMBER, val = 7}
-	{ type = STATEMENT, val = 'gusi'}
-	{ type = STATEMENT, val = '}'}
-	{ type = STATEMENT, val = 'gusi'}
-	{ type = STATEMENT, val = '}'}
-	{ type = STATEMENT, val = 'NO_TYPE'}
-	{ type = STATEMENT, val = 'NO_TYPE'}
-	{ type = STATEMENT, val = 'NO_TYPE'}
-	{ type = STATEMENT, val = 'NO_TYPE'}
+array with tokens[ 39 ] = {
+	[0] = { type = STATEMENT, val = 'wool'}
+	[1] = { type = STATEMENT, val = '('}
+	[2] = { type = VARIABLE, val = 'x'}
+	[3] = { type = STATEMENT, val = ')'}
+	[4] = { type = STATEMENT, val = '{'}
+	[5] = { type = VARIABLE, val = 'tree'}
+	[6] = { type = STATEMENT, val = 'pabgo_govnito'}
+	[7] = { type = NUMBER, val = 7}
+	[8] = { type = STATEMENT, val = 'gusi'}
+	[9] = { type = STATEMENT, val = 'wool'}
+	[10] = { type = STATEMENT, val = '('}
+	[11] = { type = NUMBER, val = 143}
+	[12] = { type = STATEMENT, val = ')'}
+	[13] = { type = VARIABLE, val = 'second_if'}
+	[14] = { type = STATEMENT, val = 'pabgo_govnito'}
+	[15] = { type = NUMBER, val = 143}
+	[16] = { type = STATEMENT, val = 'gusi'}
+	[17] = { type = VARIABLE, val = 'var_befor_and_after'}
+	[18] = { type = STATEMENT, val = 'pabgo_govnito'}
+	[19] = { type = NUMBER, val = 101}
+	[20] = { type = STATEMENT, val = 'gusi'}
+	[21] = { type = STATEMENT, val = 'wool'}
+	[22] = { type = STATEMENT, val = '('}
+	[23] ={ type = OPERATOR, val = 'sin'}
+	[24] = { type = STATEMENT, val = '('}
+	[25] = { type = VARIABLE, val = 'x'}
+	[26] = { type = STATEMENT, val = ')'}
+	[27] = { type = STATEMENT, val = ')'}
+	[28] = { type = STATEMENT, val = '{'}
+	[29] = { type = VARIABLE, val = 'a'}
+	[30] = { type = STATEMENT, val = 'pabgo_govnito'}
+	[31] = { type = NUMBER, val = 7}
+	[32] = { type = STATEMENT, val = 'gusi'}
+	[33] = { type = STATEMENT, val = '}'}
+	[34] = { type = VARIABLE, val = 'new_var_for_tokens'}
+	[35] = { type = STATEMENT, val = 'pabgo_govnito'}
+	[36] = { type = NUMBER, val = 47}
+	[37] = { type = STATEMENT, val = 'gusi'}
+	[38] = { type = STATEMENT, val = '}'}
+	[39] = { type = STATEMENT, val = 'NO_TYPE'}
+	[40] = { type = STATEMENT, val = 'NO_TYPE'}
+	[41] = { type = STATEMENT, val = 'NO_TYPE'}
+	[42] = { type = STATEMENT, val = 'NO_TYPE'}
+	[43] = { type = STATEMENT, val = 'NO_TYPE'}
+	[44] = { type = STATEMENT, val = 'NO_TYPE'}
+	[45] = { type = STATEMENT, val = 'NO_TYPE'}
+	[46] = { type = STATEMENT, val = 'NO_TYPE'}
+	[47] = { type = STATEMENT, val = 'NO_TYPE'}
+	[48] = { type = STATEMENT, val = 'NO_TYPE'}
+	[49] = { type = STATEMENT, val = 'NO_TYPE'}
+	[50] = { type = STATEMENT, val = 'NO_TYPE'}
+	[51] = { type = STATEMENT, val = 'NO_TYPE'}
+	[52] = { type = STATEMENT, val = 'NO_TYPE'}
+	[53] = { type = STATEMENT, val = 'NO_TYPE'}
+	[54] = { type = STATEMENT, val = 'NO_TYPE'}
+	[55] = { type = STATEMENT, val = 'NO_TYPE'}
+	[56] = { type = STATEMENT, val = 'NO_TYPE'}
+	[57] = { type = STATEMENT, val = 'NO_TYPE'}
+	[58] = { type = STATEMENT, val = 'NO_TYPE'}
+	[59] = { type = STATEMENT, val = 'NO_TYPE'}
+	[60] = { type = STATEMENT, val = 'NO_TYPE'}
+	[61] = { type = STATEMENT, val = 'NO_TYPE'}
+	[62] = { type = STATEMENT, val = 'NO_TYPE'}
+	[63] = { type = STATEMENT, val = 'NO_TYPE'}
+	[64] = { type = STATEMENT, val = 'NO_TYPE'}
+	[65] = { type = STATEMENT, val = 'NO_TYPE'}
+	[66] = { type = STATEMENT, val = 'NO_TYPE'}
+	[67] = { type = STATEMENT, val = 'NO_TYPE'}
+	[68] = { type = STATEMENT, val = 'NO_TYPE'}
+	[69] = { type = STATEMENT, val = 'NO_TYPE'}
+	[70] = { type = STATEMENT, val = 'NO_TYPE'}
+	[71] = { type = STATEMENT, val = 'NO_TYPE'}
+	[72] = { type = STATEMENT, val = 'NO_TYPE'}
+	[73] = { type = STATEMENT, val = 'NO_TYPE'}
+	[74] = { type = STATEMENT, val = 'NO_TYPE'}
+	[75] = { type = STATEMENT, val = 'NO_TYPE'}
+	[76] = { type = STATEMENT, val = 'NO_TYPE'}
+	[77] = { type = STATEMENT, val = 'NO_TYPE'}
+	[78] = { type = STATEMENT, val = 'NO_TYPE'}
+	[79] = { type = STATEMENT, val = 'NO_TYPE'}
 };
-capacity = 40
+capacity = 80
 

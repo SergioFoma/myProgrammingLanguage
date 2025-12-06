@@ -1,9 +1,10 @@
-array with variables[ 5 ] = {
+array with variables[ 6 ] = {
 	{ x  , 0  },
 	{ tree  , 1  },
 	{ second_if  , 2  },
-	{ var_vefor_and_after  , 3  },
+	{ var_befor_and_after  , 3  },
 	{ a  , 4  },
+	{ new_var_for_tokens  , 5  },
 };
 capacity = 8
 
@@ -12,3 +13,4 @@ var[1] = 7
 var[2] = 143
 var[3] = 101
 var[4] = 7
+var[5] = 47
