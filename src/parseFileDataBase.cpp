@@ -15,6 +15,10 @@
 const size_t startSizeForWord = 7;
 const size_t startSizeForTokens = 20;
 
+#define COMMENT_BEGIN   "##!"
+#define COMMENT_END     "!##"
+#define COMMENT_LEN     strlen( COMMENT_BEGIN )
+
 expertSystemErrors writeInformationInFile( tree_t* tree ){
     if( tree == NULL ){
         return TREE_NULL_PTR;
@@ -152,6 +156,15 @@ void lexAnalysis( char** symbol, infoForCreateTree* infoForTree ){
             initializationNodeInArray( infoForTree, infoForTree->freeIndexNow + 1 );
         }
 
+        if( strncmp( *symbol, COMMENT_BEGIN, COMMENT_LEN ) == 0 ){
+            *symbol += COMMENT_LEN;
+            while( strncmp( *symbol, COMMENT_END, COMMENT_LEN ) != 0 ){
+                ++( *symbol );
+            }
+            *symbol += COMMENT_LEN;
+            continue;
+        }
+
         bool isSearchStatement = false;
         for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
             const char* nameOfStatement = arrayWithStatements[ statementIndex ].viewOfStatementInFile;
@@ -205,7 +218,7 @@ void lexAnalysis( char** symbol, infoForCreateTree* infoForTree ){
         }
 
 
-        if( islower( **symbol ) || **symbol == '_' ){
+        if( isalpha( **symbol ) || **symbol == '_' ){
             char* lineWithVar = NULL;
             size_t lineLen = readingVariable( &lineWithVar, symbol );
             bool statusOfSearching = changTypeOfNodeOnVariableNode( infoForTree, symbol, lineWithVar, lineLen );
@@ -262,7 +275,7 @@ expertSystemErrors createTreeByRecursiveDescent( tree_t* tree ){
     infoForTree.currentIndex = 0;                               // start position - zero index
     dumpLexArrayInFile( &infoForTree );
 
-    printf( "\n freeIndex = %lu\n, currentIndex = %lu\n", infoForTree.freeIndexNow, infoForTree.currentIndex  );
+    printf( "\n freeIndex = %lu\ncurrentIndex = %lu\n", infoForTree.freeIndexNow, infoForTree.currentIndex  );
     tree->rootTree = getGeneral( &infoForTree );
     colorPrintf( NOMODE, GREEN, "\nSuccessfully reading an expression from a file\n");
 
@@ -280,7 +293,7 @@ node_t* getGeneral( infoForCreateTree* infoForTree ){
     do{
         node_t* newOperator = getOperator( infoForTree );
         nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, nodeOperator, newOperator );
-        printf( "token if gen = %lu\nsize of array = %lu\n", infoForTree->currentIndex, infoForTree->countOfTokens );
+        printf( "token in gen = %lu\nsize of array = %lu\n", infoForTree->currentIndex, infoForTree->countOfTokens );
     }while( infoForTree->currentIndex < ( infoForTree->freeIndexNow - 1 ) );
 
     printf( "token stoped = %lu\nsize of array = %lu", infoForTree->currentIndex, infoForTree->countOfTokens );
@@ -295,6 +308,7 @@ node_t* getOperator( infoForCreateTree* infoForTree ){
 
     if( nodeOperator = getAssignment( infoForTree )  ){}
     else if( nodeOperator = getCondition( infoForTree ) ){}
+    else if( nodeOperator = getCycle( infoForTree ) ){}
     else{
         if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
             ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_OPEN ){
@@ -349,6 +363,34 @@ node_t* getCondition( infoForCreateTree* infoForTree ){
     return NULL;
 }
 
+node_t* getCycle( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
+
+    for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
+        if( arrayWithStatements[ statementIndex ].statement == WHILE &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == WHILE ){
+
+            ++( infoForTree->currentIndex );
+            if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+                ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_OPEN ){
+                ++( infoForTree->currentIndex );
+            }
+            node_t* left = getExpression( infoForTree );
+            if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+                ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_CLOSE ){
+                ++( infoForTree->currentIndex );
+            }
+            node_t* right = getOperator( infoForTree );
+
+            return newStatementNode( STATEMENT, WHILE, left, right );
+          }
+    }
+
+    return NULL;
+
+}
 node_t* getAssignment( infoForCreateTree* infoForTree ){
     assert( infoForTree );
     assert( infoForTree->tokens );
@@ -415,7 +457,7 @@ node_t* getTerm( infoForCreateTree* infoForTree ){
     assert( infoForTree );
     assert( infoForTree->tokens );
 
-    node_t* left = getPrimaryExpression( infoForTree );
+    node_t* left = getPow( infoForTree );
 
 
     while( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == OPERATOR &&
@@ -425,7 +467,7 @@ node_t* getTerm( infoForCreateTree* infoForTree ){
         typeOfMathOperation currentMathOp = ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation;
         ++( infoForTree->currentIndex );
 
-        node_t* right = getPrimaryExpression( infoForTree );
+        node_t* right = getPow( infoForTree );
 
         if( currentMathOp == MUL ){
             left = newMathNode( OPERATOR, MUL, left, right );
@@ -436,6 +478,27 @@ node_t* getTerm( infoForCreateTree* infoForTree ){
     }
 
     return left;
+}
+
+node_t* getPow( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
+
+    node_t* left = getPrimaryExpression( infoForTree );
+
+
+    while( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == OPERATOR &&
+           ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.mathOperation == POW ){
+
+        ++( infoForTree->currentIndex );
+
+        node_t* right = getPrimaryExpression( infoForTree );
+
+        left = newMathNode( OPERATOR, POW, left, right );
+    }
+
+    return left;
+
 }
 
 node_t* getPrimaryExpression( infoForCreateTree* infoForTree ){
@@ -491,7 +554,6 @@ node_t* getFunctionWithOneArgument( infoForCreateTree* infoForTree ){
     return NULL;
 }
 
-
 node_t* getVariable( infoForCreateTree* infoForTree ){
     assert( infoForTree );
     assert( infoForTree->tokens );
@@ -545,7 +607,7 @@ size_t readingWord( char** lineWithWord, char** ptrOnSymbolInPosition ){
     size_t sizeOfLine = startSizeForWord;
     *lineWithWord = (char*)calloc( sizeOfLine, sizeof( char ) );
 
-    while( islower( (*ptrOnSymbolInPosition)[ lineIndex ] ) || (*ptrOnSymbolInPosition)[ lineIndex ] == '_' ){
+    while( isalpha( (*ptrOnSymbolInPosition)[ lineIndex ] ) || (*ptrOnSymbolInPosition)[ lineIndex ] == '_' ){
             isEnoughSize( lineWithWord, &lineIndex, &sizeOfLine );
             (*lineWithWord)[ lineIndex ] = (*ptrOnSymbolInPosition)[ lineIndex ];
             ++lineIndex;
@@ -567,7 +629,7 @@ size_t readingVariable( char** lineWithVariable, char** ptrOnSymbolInPosition ){
     size_t sizeOfLine = startSizeForWord;
     *lineWithVariable = (char*)calloc( sizeOfLine, sizeof( char ) );
 
-    while( islower( (*ptrOnSymbolInPosition)[ lineIndex ] ) || (*ptrOnSymbolInPosition)[ lineIndex ] == '_' ||
+    while( isalpha( (*ptrOnSymbolInPosition)[ lineIndex ] ) || (*ptrOnSymbolInPosition)[ lineIndex ] == '_' ||
           ( '0' <= (*ptrOnSymbolInPosition)[ lineIndex ]  && (*ptrOnSymbolInPosition)[ lineIndex ]  <= '9')  ){
             isEnoughSize( lineWithVariable, &lineIndex, &sizeOfLine );
             (*lineWithVariable)[ lineIndex ] = (*ptrOnSymbolInPosition)[ lineIndex ];
@@ -669,7 +731,7 @@ void dumpLexArrayInFile( infoForCreateTree* infoForTree ){
             fprintf( fileForTokens, "\t[%lu] = { type = VARIABLE, val = '%s'}\n", tokenIndex, getStringOfVariable( ( infoForTree->tokens )[ tokenIndex] ) );
         }
         else if( ( infoForTree->tokens )[ tokenIndex ]->nodeValueType == OPERATOR ){
-            fprintf( fileForTokens, "\t[%lu] ={ type = OPERATOR, val = '%s'}\n", tokenIndex, getViewOfMathOperation( ( infoForTree->tokens )[ tokenIndex ] ) );
+            fprintf( fileForTokens, "\t[%lu] = { type = OPERATOR, val = '%s'}\n", tokenIndex, getViewOfMathOperation( ( infoForTree->tokens )[ tokenIndex ] ) );
         }
         else if( ( infoForTree->tokens )[ tokenIndex ]->nodeValueType == STATEMENT ){
             fprintf( fileForTokens, "\t[%lu] = { type = STATEMENT, val = '%s'}\n", tokenIndex, getViewOfStatement( ( infoForTree->tokens )[ tokenIndex ] ) );

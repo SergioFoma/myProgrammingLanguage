@@ -37,7 +37,8 @@ informationWithStatements arrayWithStatements[] = {
         { PAR_OPEN              , "PAR_OPEN"        ,    "("                     },
         { PAR_CLOSE             , "PAR_CLOSE"       ,    ")"                     },
         { CURLY_PAR_OPEN        , "CR_PAR_OPEND"    ,    "{"                     },
-        { CURLY_PAR_CLOSE       , "CR_PAR_CLOSE"    ,    "}"                     }
+        { CURLY_PAR_CLOSE       , "CR_PAR_CLOSE"    ,    "}"                     },
+        { WHILE                 , "WHILE"           ,    "beka"                  }
 };
 const size_t sizeOfStatementArray = sizeof( arrayWithStatements ) / sizeof( arrayWithStatements[0] );
 

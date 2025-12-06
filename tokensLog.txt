@@ -1,4 +1,4 @@
-array with tokens[ 39 ] = {
+array with tokens[ 41 ] = {
 	[0] = { type = STATEMENT, val = 'wool'}
 	[1] = { type = STATEMENT, val = '('}
 	[2] = { type = VARIABLE, val = 'x'}
@@ -20,7 +20,7 @@ array with tokens[ 39 ] = {
 	[18] = { type = STATEMENT, val = 'pabgo_govnito'}
 	[19] = { type = NUMBER, val = 101}
 	[20] = { type = STATEMENT, val = 'gusi'}
-	[21] = { type = STATEMENT, val = 'wool'}
+	[21] = { type = STATEMENT, val = 'beka'}
 	[22] = { type = STATEMENT, val = '('}
 	[23] ={ type = OPERATOR, val = 'sin'}
 	[24] = { type = STATEMENT, val = '('}
@@ -35,11 +35,11 @@ array with tokens[ 39 ] = {
 	[33] = { type = STATEMENT, val = '}'}
 	[34] = { type = VARIABLE, val = 'new_var_for_tokens'}
 	[35] = { type = STATEMENT, val = 'pabgo_govnito'}
-	[36] = { type = NUMBER, val = 47}
-	[37] = { type = STATEMENT, val = 'gusi'}
-	[38] = { type = STATEMENT, val = '}'}
-	[39] = { type = STATEMENT, val = 'NO_TYPE'}
-	[40] = { type = STATEMENT, val = 'NO_TYPE'}
+	[36] = { type = NUMBER, val = 5}
+	[37] ={ type = OPERATOR, val = '+'}
+	[38] = { type = NUMBER, val = 3}
+	[39] = { type = STATEMENT, val = 'gusi'}
+	[40] = { type = STATEMENT, val = '}'}
 	[41] = { type = STATEMENT, val = 'NO_TYPE'}
 	[42] = { type = STATEMENT, val = 'NO_TYPE'}
 	[43] = { type = STATEMENT, val = 'NO_TYPE'}

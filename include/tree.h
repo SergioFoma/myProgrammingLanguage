@@ -59,7 +59,8 @@ enum typeOfStatement {
     PAR_OPEN           = 4,
     PAR_CLOSE          = 5,
     CURLY_PAR_OPEN     = 6,
-    CURLY_PAR_CLOSE    = 7
+    CURLY_PAR_CLOSE    = 7,
+    WHILE              = 8
 };
 
 union treeElem_t {
