@@ -1,4 +1,4 @@
-array with tokens[ 23 ] = {
+array with tokens[ 38 ] = {
 	[0] = { type = VARIABLE, val = 'x'}
 	[1] = { type = STATEMENT, val = 'pabgo_govnito'}
 	[2] = { type = NUMBER, val = 5}
@@ -18,25 +18,25 @@ array with tokens[ 23 ] = {
 	[16] = { type = STATEMENT, val = 'gusi'}
 	[17] = { type = STATEMENT, val = '}'}
 	[18] = { type = STATEMENT, val = 'dandruff'}
-	[19] = { type = VARIABLE, val = 'y'}
-	[20] = { type = STATEMENT, val = 'pabgo_govnito'}
-	[21] = { type = NUMBER, val = 10}
-	[22] = { type = STATEMENT, val = 'gusi'}
-	[23] = { type = STATEMENT, val = 'NO_TYPE'}
-	[24] = { type = STATEMENT, val = 'NO_TYPE'}
-	[25] = { type = STATEMENT, val = 'NO_TYPE'}
-	[26] = { type = STATEMENT, val = 'NO_TYPE'}
-	[27] = { type = STATEMENT, val = 'NO_TYPE'}
-	[28] = { type = STATEMENT, val = 'NO_TYPE'}
-	[29] = { type = STATEMENT, val = 'NO_TYPE'}
-	[30] = { type = STATEMENT, val = 'NO_TYPE'}
-	[31] = { type = STATEMENT, val = 'NO_TYPE'}
-	[32] = { type = STATEMENT, val = 'NO_TYPE'}
-	[33] = { type = STATEMENT, val = 'NO_TYPE'}
-	[34] = { type = STATEMENT, val = 'NO_TYPE'}
-	[35] = { type = STATEMENT, val = 'NO_TYPE'}
-	[36] = { type = STATEMENT, val = 'NO_TYPE'}
-	[37] = { type = STATEMENT, val = 'NO_TYPE'}
+	[19] = { type = STATEMENT, val = 'wool'}
+	[20] = { type = STATEMENT, val = '('}
+	[21] = { type = VARIABLE, val = 'x'}
+	[22] = { type = OPERATOR, val = '-'}
+	[23] = { type = NUMBER, val = 3}
+	[24] = { type = STATEMENT, val = ')'}
+	[25] = { type = STATEMENT, val = '{'}
+	[26] = { type = VARIABLE, val = 'y'}
+	[27] = { type = STATEMENT, val = 'pabgo_govnito'}
+	[28] = { type = NUMBER, val = 10}
+	[29] = { type = STATEMENT, val = 'gusi'}
+	[30] = { type = STATEMENT, val = '}'}
+	[31] = { type = STATEMENT, val = 'dandruff'}
+	[32] = { type = VARIABLE, val = 'z'}
+	[33] = { type = STATEMENT, val = 'pabgo_govnito'}
+	[34] = { type = VARIABLE, val = 'x'}
+	[35] = { type = OPERATOR, val = '+'}
+	[36] = { type = VARIABLE, val = 'y'}
+	[37] = { type = STATEMENT, val = 'gusi'}
 	[38] = { type = STATEMENT, val = 'NO_TYPE'}
 	[39] = { type = STATEMENT, val = 'NO_TYPE'}
 };

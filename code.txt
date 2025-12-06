@@ -7,4 +7,7 @@ wool( x + 7 ){
     first_var pabgo_govnito x ^ 2 gusi
 
 }
-dandruff y pabgo_govnito 10 gusi
+dandruff wool( x -3 ){
+    y pabgo_govnito 10 gusi
+}
+dandruff z pabgo_govnito x + y gusi
