@@ -81,6 +81,8 @@ const char* getEndOfAssignment();
 
 node_t* getExpression( infoForCreateTree* infoForTree );
 
+node_t* getElse( infoForCreateTree* infoForTree );
+
 node_t* getTerm( infoForCreateTree* infoForTree );
 
 node_t* getPow( infoForCreateTree* infoForTree );

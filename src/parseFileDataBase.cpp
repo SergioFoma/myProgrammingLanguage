@@ -354,7 +354,7 @@ node_t* getCondition( infoForCreateTree* infoForTree ){
                 ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_CLOSE ){
                 ++( infoForTree->currentIndex );
             }
-            node_t* right = getOperator( infoForTree );
+            node_t* right = getElse( infoForTree );
 
             return newStatementNode( STATEMENT, IF, left, right );
           }
@@ -363,6 +363,23 @@ node_t* getCondition( infoForCreateTree* infoForTree ){
     return NULL;
 }
 
+node_t* getElse( infoForCreateTree* infoForTree ){
+    assert( infoForTree );
+    assert( infoForTree->tokens );
+
+    node_t* left = getOperator( infoForTree );
+    node_t* right = NULL;
+
+    if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+        ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == ELSE ){
+
+        ++( infoForTree->currentIndex );
+        right = getOperator( infoForTree );
+    }
+
+    return newStatementNode( STATEMENT, ELSE, left, right );
+
+}
 node_t* getCycle( infoForCreateTree* infoForTree ){
     assert( infoForTree );
     assert( infoForTree->tokens );

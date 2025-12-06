@@ -1,12 +1,10 @@
 ##! PUBG LANGUAGE !##
 
-wool( x ){
-    tree pabgo_govnito 7 gusi
-    wool( 143 ) second_if pabgo_govnito 143 gusi
-    var_befor_and_after pabgo_govnito 101 gusi
-    beka( sin( x ) ){
-        a pabgo_govnito 7 gusi
-    }
+x pabgo_govnito 5 gusi
 
-    new_var_for_tokens pabgo_govnito 5 + 3 gusi
+wool( x + 7 ){
+
+    first_var pabgo_govnito x ^ 2 gusi
+
 }
+dandruff y pabgo_govnito 10 gusi
