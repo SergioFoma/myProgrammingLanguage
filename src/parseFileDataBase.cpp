@@ -289,14 +289,28 @@ node_t* getGeneral( infoForCreateTree* infoForTree ){
     assert( infoForTree );
     assert( infoForTree->tokens );
 
-    node_t* nodeOperator = NULL;
-    do{
-        node_t* newOperator = getOperator( infoForTree );
-        nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, nodeOperator, newOperator );
-        printf( "token in gen = %lu\nsize of array = %lu\n", infoForTree->currentIndex, infoForTree->countOfTokens );
-    }while( infoForTree->currentIndex < ( infoForTree->freeIndexNow - 1 ) );
+    node_t* nodeOperator = makeTreeFromOperators( infoForTree );
 
     printf( "token stoped = %lu\nsize of array = %lu", infoForTree->currentIndex, infoForTree->countOfTokens );
+    return nodeOperator;
+}
+
+node_t* makeTreeFromOperators( infoForCreateTree* infoForTree ){
+    if( infoForTree->currentIndex >= ( infoForTree->freeIndexNow - 1 ) ){
+        return NULL;
+    }
+
+    node_t* nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, NULL, NULL );
+    nodeOperator->left = getOperator( infoForTree );
+    nodeOperator->right = makeTreeFromOperators( infoForTree );
+
+    if( nodeOperator->left ){
+        nodeOperator->left->parent = nodeOperator;
+    }
+    if( nodeOperator->right ){
+        nodeOperator->right->parent = nodeOperator;
+    }
+
     return nodeOperator;
 }
 

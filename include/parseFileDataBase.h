@@ -69,6 +69,8 @@ void lexAnalysis( char** mathExpression, infoForCreateTree* infoForTree );
 
 node_t* getGeneral( infoForCreateTree* infoForTree );
 
+node_t* makeTreeFromOperators( infoForCreateTree* infoForTree );
+
 node_t* getOperator( infoForCreateTree* infoForTree );
 
 node_t* getAssignment( infoForCreateTree* infoForTree );

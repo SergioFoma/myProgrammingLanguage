@@ -1,12 +1,18 @@
-array with variables[ 4 ] = {
+array with variables[ 7 ] = {
 	{ x  , 0  },
-	{ first_var  , 1  },
-	{ y  , 2  },
-	{ z  , 3  },
+	{ y  , 1  },
+	{ first_var  , 2  },
+	{ first_num  , 3  },
+	{ second_num  , 4  },
+	{ third_num  , 5  },
+	{ finally  , 6  },
 };
 capacity = 8
 
 var[0] = 5
-var[1] = 25
-var[2] = 10
-var[3] = 15
+var[1] = -0.958924
+var[2] = 25
+var[3] = 1
+var[4] = 2
+var[5] = 3
+var[6] = 47
