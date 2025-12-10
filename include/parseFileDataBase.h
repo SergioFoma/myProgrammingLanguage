@@ -73,6 +73,8 @@ node_t* makeTreeFromOperators( infoForCreateTree* infoForTree );
 
 node_t* getOperator( infoForCreateTree* infoForTree );
 
+node_t* getNodeFromOperatorThatCalledOperator( infoForCreateTree* infoForTree );
+
 node_t* getAssignment( infoForCreateTree* infoForTree );
 
 node_t* getCondition( infoForCreateTree* infoForTree );

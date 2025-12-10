@@ -1,18 +1,18 @@
 array with variables[ 7 ] = {
-	{ x  , 0  },
-	{ y  , 1  },
-	{ first_var  , 2  },
-	{ first_num  , 3  },
-	{ second_num  , 4  },
-	{ third_num  , 5  },
-	{ finally  , 6  },
+	{ a  , 0  },
+	{ i  , 1  },
+	{ d  , 2  },
+	{ h  , 3  },
+	{ g  , 4  },
+	{ b  , 5  },
+	{ c  , 6  },
 };
 capacity = 8
 
-var[0] = 5
-var[1] = -0.958924
-var[2] = 25
-var[3] = 1
-var[4] = 2
-var[5] = 3
-var[6] = 47
+var[0] = 0
+var[1] = 45
+var[2] = 35
+var[3] = 145
+var[4] = 10
+var[5] = 20
+var[6] = 21025

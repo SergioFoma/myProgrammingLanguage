@@ -300,8 +300,7 @@ node_t* makeTreeFromOperators( infoForCreateTree* infoForTree ){
         return NULL;
     }
 
-    node_t* nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, NULL, NULL );
-    nodeOperator->left = getOperator( infoForTree );
+    node_t* nodeOperator = getOperator( infoForTree );
     nodeOperator->right = makeTreeFromOperators( infoForTree );
 
     if( nodeOperator->left ){
@@ -318,32 +317,48 @@ node_t* getOperator( infoForCreateTree* infoForTree ){
     assert( infoForTree );
     assert( infoForTree->tokens );
 
-    node_t* nodeOperator = NULL;
+    node_t* nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, NULL, NULL );
 
-    if( nodeOperator = getAssignment( infoForTree )  ){}
-    else if( nodeOperator = getCondition( infoForTree ) ){}
-    else if( nodeOperator = getCycle( infoForTree ) ){}
+    if( nodeOperator->left = getAssignment( infoForTree )  ){}
+    else if( nodeOperator->left = getCondition( infoForTree ) ){}
+    else if( nodeOperator->left = getCycle( infoForTree ) ){}
     else{
+
         if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
             ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_OPEN ){
             ++( infoForTree->currentIndex );
         }
 
-        do{
-            node_t* newOperator = getOperator( infoForTree );
-            nodeOperator = newStatementNode( STATEMENT, OPERATOR_END, nodeOperator, newOperator );
-        }while( !( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
-                   ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_CLOSE ) );
+        destroyNode( nodeOperator );
+        nodeOperator = getNodeFromOperatorThatCalledOperator( infoForTree );
 
-        if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
-            ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_CLOSE ){
-            ++( infoForTree->currentIndex );
-        }
     }
 
     if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
         ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == OPERATOR_END ){
         ++( infoForTree->currentIndex );
+    }
+
+    printf( "node in OP = '%s'\n", getStringOfStatement(  nodeOperator ) );
+    return nodeOperator;
+}
+
+node_t* getNodeFromOperatorThatCalledOperator( infoForCreateTree* infoForTree ){
+    if( ( infoForTree->tokens )[ infoForTree->currentIndex ]->nodeValueType == STATEMENT &&
+           ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == CURLY_PAR_CLOSE ) {
+        ++( infoForTree->currentIndex );
+        return NULL;
+    }
+
+    node_t* nodeOperator = getOperator( infoForTree );
+    nodeOperator->right = getNodeFromOperatorThatCalledOperator( infoForTree );
+    printf( "node in opThatCalledOp = '%s'\n", getStringOfStatement(  nodeOperator ) );
+
+    if( nodeOperator->left ){
+        nodeOperator->left->parent = nodeOperator;
+    }
+    if( nodeOperator->right ){
+        nodeOperator->right->parent = nodeOperator;
     }
 
     return nodeOperator;
@@ -413,7 +428,7 @@ node_t* getCycle( infoForCreateTree* infoForTree ){
                 ( infoForTree->tokens )[ infoForTree->currentIndex ]->data.statement == PAR_CLOSE ){
                 ++( infoForTree->currentIndex );
             }
-            node_t* right = getOperator( infoForTree );
+            node_t* right = getElse( infoForTree );
 
             return newStatementNode( STATEMENT, WHILE, left, right );
           }
