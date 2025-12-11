@@ -87,6 +87,14 @@ node_t* getExpression( infoForCreateTree* infoForTree );
 
 node_t* getElse( infoForCreateTree* infoForTree );
 
+node_t* getLogicalAnd( infoForCreateTree* infoForTree );
+
+node_t* getLogicalOr( infoForCreateTree* infoForTree );
+
+node_t* getTypeOfEqual( infoForCreateTree* infoForTree );
+
+node_t* getCompareOperations( infoForCreateTree* infoForTree );
+
 node_t* getTerm( infoForCreateTree* infoForTree );
 
 node_t* getPow( infoForCreateTree* infoForTree );
@@ -108,6 +116,8 @@ void isEnoughSize( char** lineWithWord, size_t* lineIndex, size_t* sizeOfLine );
 bool checkingOnFunction( infoForCreateTree* infoForTree );
 
 bool checkingOnStatement( infoForCreateTree* infoForTree );
+
+bool checkingOnExpression( infoForCreateTree* infoForTree );
 
 node_t* getNumber( infoForCreateTree* infoForTree );
 

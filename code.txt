@@ -1,16 +1,8 @@
-wool( a  ){
+wool( 5 |BMP| 7  ){
     i pabgo_govnito 45 gusi
-    d pabgo_govnito 35 gusi
-    h pabgo_govnito 145 gusi
-}
-dandruff{
-
-    {
-    g pabgo_govnito 10 gusi
-    b pabgo_govnito 20 gusi
+    wool( i < 47 |AIRDROP| i >= 100 ){
+        d pabgo_govnito 35 gusi
     }
-
+    h pabgo_govnito ( 145 == d ) gusi
 }
 
-
-c pabgo_govnito 145 ^ 2 gusi

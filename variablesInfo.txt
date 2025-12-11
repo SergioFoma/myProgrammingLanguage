@@ -1,18 +1,10 @@
-array with variables[ 7 ] = {
-	{ a  , 0  },
-	{ i  , 1  },
-	{ d  , 2  },
-	{ h  , 3  },
-	{ g  , 4  },
-	{ b  , 5  },
-	{ c  , 6  },
+array with variables[ 3 ] = {
+	{ i  , 0  },
+	{ d  , 1  },
+	{ h  , 2  },
 };
-capacity = 8
+capacity = 4
 
-var[0] = 0
-var[1] = 45
-var[2] = 35
-var[3] = 145
-var[4] = 10
-var[5] = 20
-var[6] = 21025
+var[0] = 45
+var[1] = 35
+var[2] = 4.44509e+75

@@ -53,4 +53,13 @@ struct informationWithStatements {
 extern informationWithStatements arrayWithStatements[];
 extern const size_t sizeOfStatementArray;
 
+struct informationWithExpressions {
+    typeOfExpressions expressionOperator;
+    const char* nameOfExpressions;
+    const char* viewOfExpressionOperatorInFile;
+};
+
+extern informationWithExpressions arrayWithExpressions[];
+extern const size_t sizeOfExpressionArray;
+
 #endif

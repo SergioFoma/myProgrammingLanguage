@@ -22,20 +22,10 @@ void dumpNode( node_t* node, int rank, FILE* treeFile ){
                             "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %lg </td></tr> ",
                             ( unsigned long )node, node, node->parent, stringNodeValueType, node->data.number  );
     }
-    else if( node->nodeValueType == OPERATOR ){
-        fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"orange\"; label = "
+    else{
+        fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"%s\"; label = "
                             "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %s </td></tr> ",
-                            ( unsigned long )node, node, node->parent, stringNodeValueType, getStringOfMathOperator( node )  );
-    }
-    else if( node->nodeValueType == VARIABLE ){
-        fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"lightskyblue2\"; label = "
-                            "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %lu (%s) </td></tr> ",
-                            ( unsigned long )node, node, node->parent, stringNodeValueType, node->data.variableIndexInArray, getStringOfVariable( node )  );
-    }
-    else if( node->nodeValueType == STATEMENT ){
-        fprintf( treeFile, "\tnode%lx [shape=\"plain\"; style =\"filled\"; fillcolor =\"slateblue1\"; label = "
-                            "<<table><tr><td colspan = \"2\" > %p </td></tr> <tr><td colspan = \"2\" > parent = %p </td></tr> <tr><td width = \"100\" colspan = \"2\" > type = %s </td></tr> <tr><td width = \"100\" colspan = \"2\" > val = %s </td></tr> ",
-                            ( unsigned long )node, node, node->parent, stringNodeValueType, getStringOfStatement( node )  );
+                            ( unsigned long )node, getStringOfColor( node ) ,node, node->parent, stringNodeValueType, getStringOfNodeValue( node )  );
     }
 
     if( node->left ){
@@ -144,6 +134,9 @@ void dumpNodeInFile( const node_t* node, FILE* fileForPrint ){
     else if( node->nodeValueType == STATEMENT ){
         fprintf( fileForPrint, "( %s ", getViewOfStatement( node ) );
     }
+    else if( node->nodeValueType == EXPRESSION ){
+        fprintf( fileForPrint, " ( %s ", getViewOfExpression( node ) );
+    }
 
     if( node->left ){
         dumpNodeInFile( node->left, fileForPrint);
@@ -188,6 +181,9 @@ static void dumpTheSortedNodeInFile( const node_t* node, FILE* fileForPrint ){
     else if( node->nodeValueType == STATEMENT ){
         fprintf( fileForPrint, " %s ", getViewOfStatement( node ) );
     }
+    else if( node->nodeValueType == EXPRESSION ){
+        fprintf( fileForPrint, " %s ", getViewOfExpression( node ) );
+    }
 
     if( node->right ){
         dumpTheSortedNodeInFile( node->right, fileForPrint);
@@ -213,6 +209,51 @@ const char* getStringOfValueType( const node_t* node ){
     }
 
     return NULL;
+}
+
+const char* getStringOfColor( const node_t* node ){
+    assert( node );
+
+    switch( node->nodeValueType ){
+        case OPERATOR:
+            return "orange";
+            break;
+        case STATEMENT:
+            return "slateblue1";
+            break;
+        case EXPRESSION:
+            return "goldenrod1";
+            break;
+        case VARIABLE:
+            return "lightskyblue2";
+            break;
+        default:
+            return NULL;
+            break;
+    }
+
+}
+
+const char* getStringOfNodeValue( const node_t* node ){
+    switch( node->nodeValueType ){
+
+        case OPERATOR:
+            return getStringOfMathOperator( node );
+            break;
+        case STATEMENT:
+            return getStringOfStatement( node );
+            break;
+        case EXPRESSION:
+            return getStringOfExpression( node );
+            break;
+        case VARIABLE:
+            return getStringOfVariable( node );
+            break;
+        default:
+            return NULL;
+            break;
+    }
+
 }
 
 const char* getStringOfMathOperator( const node_t* node ){
@@ -281,3 +322,26 @@ const char* getViewOfStatement( const node_t* node ){
     return NULL;
 }
 
+const char* getStringOfExpression( const node_t* node ){
+    assert( node );
+
+    for( size_t expressionIndex = 0; expressionIndex < sizeOfExpressionArray; expressionIndex++ ){
+        if( node->data.expressionOperator == arrayWithExpressions[ expressionIndex ].expressionOperator ){
+            return arrayWithExpressions[ expressionIndex ].nameOfExpressions;
+        }
+    }
+
+    return NULL;
+}
+
+const char* getViewOfExpression( const node_t* node ){
+    assert( node );
+
+    for( size_t expressionIndex = 0; expressionIndex < sizeOfExpressionArray; expressionIndex++ ){
+        if( node->data.expressionOperator == arrayWithExpressions[ expressionIndex ].expressionOperator ){
+            return arrayWithExpressions[ expressionIndex ].viewOfExpressionOperatorInFile;
+        }
+    }
+
+    return NULL;
+}

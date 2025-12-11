@@ -22,7 +22,8 @@ enum typeOfDataInNode {
     NUMBER      = 0,
     OPERATOR    = 1,
     VARIABLE    = 2,
-    STATEMENT   = 3
+    STATEMENT   = 3,
+    EXPRESSION  = 4
 };
 
 #define typeOfRoot NUMBER
@@ -64,11 +65,23 @@ enum typeOfStatement {
     ELSE               = 9
 };
 
+enum typeOfExpressions {
+    AND                     = 0,
+    OR                      = 1,
+    BELOW                   = 2,
+    BELOW_OR_EQUAL          = 3,
+    ABOVE                   = 4,
+    ABOVE_OR_EQUAL          = 5,
+    EQUAL                   = 6,
+    NOT_EQUAL               = 7
+};
+
 union treeElem_t {
     double number;
     size_t variableIndexInArray;
     typeOfMathOperation mathOperation;
     typeOfStatement statement;
+    typeOfExpressions expressionOperator;
 };
 
 struct node_t {
@@ -104,5 +117,7 @@ void destroyNode( node_t* node );
 void destroyTree( tree_t* node );
 
 node_t* newStatementNode( typeOfDataInNode nodeType, typeOfStatement typeOfStatement, node_t* leftNode, node_t* rightNode );
+
+node_t* newExpressionNode( typeOfDataInNode nodeType, typeOfExpressions typeOfStatement, node_t* leftNode, node_t* rightNode );
 
 #endif

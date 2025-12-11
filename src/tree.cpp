@@ -58,6 +58,10 @@ treeErrors initializationDataInNode( node_t** node, typeOfDataInNode typeOfData,
             (*node)->nodeValueType = STATEMENT;
             (*node)->data.statement = element.statement;
             break;
+        case EXPRESSION:
+            (*node)->nodeValueType = EXPRESSION;
+            (*node)->data.expressionOperator = element.expressionOperator;
+            break;
         default:
             return NOT_CORRECT_TYPE_OF_DATA;
             break;
@@ -102,6 +106,7 @@ node_t* newStatementNode( typeOfDataInNode nodeType, typeOfStatement typeOfState
     initNode( &newStatementNode, nodeType, data );
     newStatementNode->left = leftNode;
     newStatementNode->right = rightNode;
+
     if( newStatementNode->left ){
         newStatementNode->left->parent = newStatementNode;
     }
@@ -110,4 +115,24 @@ node_t* newStatementNode( typeOfDataInNode nodeType, typeOfStatement typeOfState
     }
 
     return newStatementNode;
+}
+
+node_t* newExpressionNode( typeOfDataInNode nodeType, typeOfExpressions typeOfExpression, node_t* leftNode, node_t* rightNode ){
+
+    node_t* newExpressionNode = NULL;
+    treeElem_t data = {};
+    data.expressionOperator = typeOfExpression;
+
+    initNode( &newExpressionNode, nodeType, data );
+    newExpressionNode->left = leftNode;
+    newExpressionNode->right = rightNode;
+
+    if( newExpressionNode->left ){
+        newExpressionNode->left->parent = newExpressionNode;
+    }
+    if( newExpressionNode->right ){
+        newExpressionNode->right->parent = newExpressionNode;
+    }
+
+    return newExpressionNode;
 }

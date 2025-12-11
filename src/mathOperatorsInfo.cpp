@@ -41,7 +41,19 @@ informationWithStatements arrayWithStatements[] = {
         { WHILE                 , "WHILE"           ,    "beka"                  },
         { ELSE                  , "ELSE"            ,    "dandruff"              }
 };
-const size_t sizeOfStatementArray = sizeof( arrayWithStatements ) / sizeof( arrayWithStatements[0] );
+const size_t sizeOfStatementArray = sizeof( arrayWithStatements ) / sizeof( arrayWithStatements[ 0 ] );
+
+struct informationWithExpressions arrayWithExpressions[] = {
+        { AND                   ,       "AND"           ,  "|BMP|"               },
+        { OR                    ,       "OR"            ,  "|AIRDROP|"           },
+        { ABOVE_OR_EQUAL        ,       "ABOVE_OR_EQ"   ,  ">="                  },
+        { BELOW_OR_EQUAL        ,       "BELOW_OR_EQ"   ,  "<="                  },
+        { EQUAL                 ,       "EQUAL"         ,  "=="                  },
+        { NOT_EQUAL             ,       "NOT_EQUAL"     ,  "!="                  },
+        { BELOW                 ,       "BELOW"         ,  "<"                   },
+        { ABOVE                 ,       "ABOVE"         ,  ">"                   }
+};
+const size_t sizeOfExpressionArray = sizeof( arrayWithExpressions ) / sizeof( arrayWithExpressions[ 0 ] );
 
 size_t startIndexForArrayWithVar = 0;
 informationWithVariables* arrayWithVariables = ( informationWithVariables* )calloc( startIndexForArrayWithVar + 1, sizeof( informationWithVariables ) );
@@ -50,9 +62,10 @@ informationWithVariablesArray infoForVarArray = { startIndexForArrayWithVar + 1,
 double* arrayWithVariableValue = (double*)calloc( startIndexForArrayWithVar + 1, sizeof( double ) );
 
 informationWithValueType arrayWithValueType[] = {
-        { NUMBER,       "NUMBER"        },
-        { VARIABLE,     "VARIABLE"      },
-        { OPERATOR,     "OPERATOR"      },
-        { STATEMENT,    "STATEMENT"     }
+        { NUMBER        ,     "NUMBER"        },
+        { VARIABLE      ,     "VARIABLE"      },
+        { OPERATOR      ,     "OPERATOR"      },
+        { STATEMENT     ,     "STATEMENT"     },
+        { EXPRESSION    ,     "EXPRESSION"    }
 };
 const size_t sizeOfArrayWithValueType = sizeof( arrayWithValueType ) / sizeof( arrayWithValueType[ 0 ] );
