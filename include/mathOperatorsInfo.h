@@ -48,6 +48,7 @@ struct informationWithStatements {
     typeOfStatement statement;
     const char* nameOfStatement;
     const char* viewOfStatementInFile;
+    const char* viewOfStatementInAST;
 };
 
 extern informationWithStatements arrayWithStatements[];
@@ -57,6 +58,7 @@ struct informationWithExpressions {
     typeOfExpressions expressionOperator;
     const char* nameOfExpressions;
     const char* viewOfExpressionOperatorInFile;
+    const char* viewOfExpressionInAST;
 };
 
 extern informationWithExpressions arrayWithExpressions[];

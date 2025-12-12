@@ -13,6 +13,8 @@ const char* getStringOfMathOperator( const node_t* node );
 
 const char* getStringOfNodeValue( const node_t* node );
 
+const char* getASTviewOfNodeValue( const node_t* node );
+
 const char* getStringOfVariable( const node_t* node );
 
 const char* getViewOfMathOperation( const node_t* node );
@@ -21,9 +23,13 @@ const char* getStringOfStatement( const node_t* node );
 
 const char* getViewOfStatement( const node_t* node );
 
+const char* getASTviewOfStatement( const node_t* node );
+
 const char* getStringOfExpression( const node_t* node );
 
 const char* getViewOfExpression( const node_t* node );
+
+const char* getASTviewOfExpression( const node_t* node );
 
 treeErrors dumpTree( tree_t* tree );
 

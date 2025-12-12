@@ -123,26 +123,17 @@ void dumpNodeInFile( const node_t* node, FILE* fileForPrint ){
     assert( fileForPrint );
 
     if( node->nodeValueType == NUMBER ){
-        fprintf( fileForPrint, "( %lg ", node->data.number );
+        fprintf( fileForPrint, "(%lg ", node->data.number );
     }
-    else if( node->nodeValueType == VARIABLE ){
-        fprintf( fileForPrint, "( %s ", getStringOfVariable( node ) );
-    }
-    else if( node->nodeValueType == OPERATOR ){
-        fprintf( fileForPrint, "( %s ", getViewOfMathOperation( node ) );
-    }
-    else if( node->nodeValueType == STATEMENT ){
-        fprintf( fileForPrint, "( %s ", getViewOfStatement( node ) );
-    }
-    else if( node->nodeValueType == EXPRESSION ){
-        fprintf( fileForPrint, " ( %s ", getViewOfExpression( node ) );
+    else{
+        fprintf( fileForPrint, "(%s ", getASTviewOfNodeValue( node ) );
     }
 
     if( node->left ){
         dumpNodeInFile( node->left, fileForPrint);
     }
     else{
-        fprintf( fileForPrint, "nil" );
+        fprintf( fileForPrint, "nil " );
     }
     if( node->right ){
         dumpNodeInFile( node->right, fileForPrint );
@@ -235,8 +226,9 @@ const char* getStringOfColor( const node_t* node ){
 }
 
 const char* getStringOfNodeValue( const node_t* node ){
-    switch( node->nodeValueType ){
+    assert( node );
 
+    switch( node->nodeValueType ){
         case OPERATOR:
             return getStringOfMathOperator( node );
             break;
@@ -245,6 +237,29 @@ const char* getStringOfNodeValue( const node_t* node ){
             break;
         case EXPRESSION:
             return getStringOfExpression( node );
+            break;
+        case VARIABLE:
+            return getStringOfVariable( node );
+            break;
+        default:
+            return NULL;
+            break;
+    }
+
+}
+
+const char* getASTviewOfNodeValue( const node_t* node ){
+    assert( node );
+
+    switch( node->nodeValueType ){
+        case OPERATOR:
+            return getViewOfMathOperation( node );
+            break;
+        case STATEMENT:
+            return getASTviewOfStatement( node );
+            break;
+        case EXPRESSION:
+            return getASTviewOfExpression( node );
             break;
         case VARIABLE:
             return getStringOfVariable( node );
@@ -322,6 +337,18 @@ const char* getViewOfStatement( const node_t* node ){
     return NULL;
 }
 
+const char* getASTviewOfStatement( const node_t* node ){
+    assert( node );
+
+    for( size_t statementIndex = 0; statementIndex < sizeOfStatementArray; statementIndex++ ){
+        if( node->data.statement == arrayWithStatements[ statementIndex ].statement ){
+            return arrayWithStatements[ statementIndex ].viewOfStatementInAST;
+        }
+    }
+
+    return NULL;
+}
+
 const char* getStringOfExpression( const node_t* node ){
     assert( node );
 
@@ -340,6 +367,18 @@ const char* getViewOfExpression( const node_t* node ){
     for( size_t expressionIndex = 0; expressionIndex < sizeOfExpressionArray; expressionIndex++ ){
         if( node->data.expressionOperator == arrayWithExpressions[ expressionIndex ].expressionOperator ){
             return arrayWithExpressions[ expressionIndex ].viewOfExpressionOperatorInFile;
+        }
+    }
+
+    return NULL;
+}
+
+const char* getASTviewOfExpression( const node_t* node ){
+    assert( node );
+
+    for( size_t expressionIndex = 0; expressionIndex < sizeOfExpressionArray; expressionIndex++ ){
+        if( node->data.expressionOperator == arrayWithExpressions[ expressionIndex ].expressionOperator ){
+            return arrayWithExpressions[ expressionIndex ].viewOfExpressionInAST;
         }
     }
 

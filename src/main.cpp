@@ -15,6 +15,8 @@ int main(){
 
     //summaryOfConstants( &tree );
 
+    writeInformationInFile( &tree );
+
     dumpTree( &tree );
     destroyTree( &tree );
 

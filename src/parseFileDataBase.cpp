@@ -24,7 +24,7 @@ expertSystemErrors writeInformationInFile( tree_t* tree ){
         return TREE_NULL_PTR;
     }
 
-    colorPrintf( NOMODE, YELLOW, "\nEnter the name of file were do you want save data base: " );
+    colorPrintf( NOMODE, YELLOW, "\nEnter the name of file were do you want save PUBG language: " );
 
     char* fileNameForWrite = NULL;
     size_t sizeOfAllocationMemory = 0;

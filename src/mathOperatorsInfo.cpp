@@ -30,28 +30,28 @@ informationWithMathOperators arrayWithMathInfo[] = {
 const size_t sizeOfMathArray = sizeof( arrayWithMathInfo ) / sizeof( arrayWithMathInfo[ 0 ] );
 
 informationWithStatements arrayWithStatements[] = {
-        { NO_TYPE               ,   "NO_TYPE"       ,   "NO_TYPE"                },
-        { ASSIGNMENT            ,   "ASSIGNMENT"    ,   "pabgo_govnito"          },
-        { OPERATOR_END          ,   "OP_END"        ,   "gusi"                   },
-        { IF                    ,     "IF"          ,   "wool"                   },
-        { PAR_OPEN              , "PAR_OPEN"        ,    "("                     },
-        { PAR_CLOSE             , "PAR_CLOSE"       ,    ")"                     },
-        { CURLY_PAR_OPEN        , "CR_PAR_OPEND"    ,    "{"                     },
-        { CURLY_PAR_CLOSE       , "CR_PAR_CLOSE"    ,    "}"                     },
-        { WHILE                 , "WHILE"           ,    "beka"                  },
-        { ELSE                  , "ELSE"            ,    "dandruff"              }
+        { NO_TYPE               ,   "NO_TYPE"       ,   "NO_TYPE"           ,   "NO_TYPE"       },
+        { ASSIGNMENT            ,   "ASSIGNMENT"    ,   "pabgo_govnito"     ,   "="             },
+        { OPERATOR_END          ,   "OP_END"        ,   "gusi"              ,   ";"             },
+        { IF                    ,     "IF"          ,   "wool"              ,   "if"            },
+        { PAR_OPEN              , "PAR_OPEN"        ,    "("                ,   "("             },
+        { PAR_CLOSE             , "PAR_CLOSE"       ,    ")"                ,   ")"             },
+        { CURLY_PAR_OPEN        , "CR_PAR_OPEND"    ,    "{"                ,   "{"             },
+        { CURLY_PAR_CLOSE       , "CR_PAR_CLOSE"    ,    "}"                ,   "}"             },
+        { WHILE                 , "WHILE"           ,    "beka"             ,   "while"         },
+        { ELSE                  , "ELSE"            ,    "dandruff"         ,   "else"          }
 };
 const size_t sizeOfStatementArray = sizeof( arrayWithStatements ) / sizeof( arrayWithStatements[ 0 ] );
 
 struct informationWithExpressions arrayWithExpressions[] = {
-        { AND                   ,       "AND"           ,  "|BMP|"               },
-        { OR                    ,       "OR"            ,  "|AIRDROP|"           },
-        { ABOVE_OR_EQUAL        ,       "ABOVE_OR_EQ"   ,  ">="                  },
-        { BELOW_OR_EQUAL        ,       "BELOW_OR_EQ"   ,  "<="                  },
-        { EQUAL                 ,       "EQUAL"         ,  "=="                  },
-        { NOT_EQUAL             ,       "NOT_EQUAL"     ,  "!="                  },
-        { BELOW                 ,       "BELOW"         ,  "<"                   },
-        { ABOVE                 ,       "ABOVE"         ,  ">"                   }
+        { AND                   ,       "AND"           ,  "|BMP|"       ,       "&&"             },
+        { OR                    ,       "OR"            ,  "|AIRDROP|"   ,       "||"             },
+        { ABOVE_OR_EQUAL        ,       "ABOVE_OR_EQ"   ,  ">="          ,       ">="             },
+        { BELOW_OR_EQUAL        ,       "BELOW_OR_EQ"   ,  "<="          ,       "<="             },
+        { EQUAL                 ,       "EQUAL"         ,  "=="          ,       "=="             },
+        { NOT_EQUAL             ,       "NOT_EQUAL"     ,  "!="          ,       "!="             },
+        { BELOW                 ,       "BELOW"         ,  "<"           ,       "<"              },
+        { ABOVE                 ,       "ABOVE"         ,  ">"           ,       ">"              }
 };
 const size_t sizeOfExpressionArray = sizeof( arrayWithExpressions ) / sizeof( arrayWithExpressions[ 0 ] );
 
